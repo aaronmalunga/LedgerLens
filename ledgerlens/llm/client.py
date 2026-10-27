@@ -39,7 +39,8 @@ class MetaModelClient:
         self.text_model = os.environ.get("LEDGERLENS_TEXT_MODEL", self.vision_model)
         assert_standard_model(self.vision_model)
         assert_standard_model(self.text_model)
-        self.client = OpenAI(api_key=os.environ["META_API_KEY"],
+        # Meta's docs call the key MODEL_API_KEY; META_API_KEY is accepted too.
+        self.client = OpenAI(api_key=os.environ.get("META_API_KEY") or os.environ["MODEL_API_KEY"],
                              base_url=os.environ.get("META_BASE_URL", "https://api.meta.ai/v1"))
 
     def extract(self, *, media, mime, text, source_hint):
@@ -53,7 +54,10 @@ class MetaModelClient:
         resp = self.client.chat.completions.create(
             model=self.vision_model if media else self.text_model,
             messages=[{"role": "system", "content": prompt}, {"role": "user", "content": content}],
-            response_format={"type": "json_object"},
+            # Schema-constrained decoding (Meta docs, "Structured output"): the output is guaranteed to match
+            # the Transaction schema, which removes malformed-JSON failures and narrows prompt-injection (F4).
+            response_format={"type": "json_schema",
+                             "json_schema": {"name": "Transaction", "schema": Transaction.model_json_schema()}},
             temperature=0,
         )
         u = resp.usage
