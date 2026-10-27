@@ -7,6 +7,7 @@ from decimal import Decimal, InvalidOperation
 from ledgerlens.llm.client import ModelClient
 
 from .checks import check_transaction
+from .creditfile import build_credit_file, render_text
 from .demo import DEMO_LABEL, DEMO_TRANSACTIONS
 from .guard import REFUSALS, Guard
 from .events import Button, InboundEvent, InboundKind, OutboundKind, OutboundMessage
@@ -51,6 +52,10 @@ class Core:
             return [_text(HELP)]
         if body.lower() == "summary":
             return [_text(self._summary(ev.user_ref))]
+        if body.lower() in {"credit file", "creditfile", "file"}:
+            rows = self.store.entries(ev.user_ref)
+            demo = any(r["source_event_id"].startswith("demo:") for r in rows)  # F12: label simulated history
+            return [_text(render_text(build_credit_file(rows), DEMO_LABEL if demo else ""))]
         if body.lower() == "demo":
             return [_text(self._seed_demo(ev))]
         pid = self.store.latest_awaiting_edit(ev.user_ref)
