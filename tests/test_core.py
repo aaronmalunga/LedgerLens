@@ -151,3 +151,42 @@ def test_demo_summary_shows_evidence_share():
     c.handle(ev("m1", InboundKind.TEXT, text="demo"))
     s = c.handle(ev("m2", InboundKind.TEXT, text="summary"))[0].text
     assert "money in 625.00" in s and "Income backed by receipts/SMS: 38%" in s
+
+
+# --- D-13: edits demote the evidence tier (review finding F3) ---
+def _sms_with_id():
+    return Transaction(date="2026-10-20", direction="in", amount="50", currency="ZMW", txn_id="MP123",
+                       source_type=SourceType.SMS)
+
+
+def _edit_and_confirm(c, text):
+    pid = card_pid(c.handle(ev("a1", InboundKind.TEXT, text="MTN received K50 txn id MP123")))
+    c.handle(ev("a2", InboundKind.BUTTON_REPLY, button_id=f"edit:{pid}"))
+    out = c.handle(ev("a3", InboundKind.TEXT, text=text))
+    c.handle(ev("a4", InboundKind.BUTTON_REPLY, button_id=f"confirm:{pid}"))
+    return out, c.store.entries(USER)[0]
+
+
+def test_editing_amount_demotes_t1_to_t3():
+    out, e = _edit_and_confirm(core_with(_sms_with_id()), "amount 5000")
+    assert e["tier"] == "T3" and e["tx"]["amount"] == "5000" and "you edited this" in out[0].text
+
+
+def test_editing_date_demotes_but_counterparty_edit_does_not():
+    _, e = _edit_and_confirm(core_with(_sms_with_id()), "date 2026-10-19")
+    assert e["tier"] == "T3"
+    _, e = _edit_and_confirm(core_with(_sms_with_id()), "counterparty Mama Chanda")
+    assert e["tier"] == "T1"
+
+
+def test_edit_to_the_same_value_is_not_an_edit():
+    _, e = _edit_and_confirm(core_with(_sms_with_id()), "amount 50")
+    assert e["tier"] == "T1"
+
+
+def test_model_cannot_pre_set_the_edited_flag():
+    forged = _sms_with_id().model_copy(update={"edited": True})
+    c = core_with(forged)
+    pid = card_pid(c.handle(ev("b1", InboundKind.TEXT, text="MTN received K50 txn id MP123")))
+    c.handle(ev("b2", InboundKind.BUTTON_REPLY, button_id=f"confirm:{pid}"))
+    assert c.store.entries(USER)[0]["tier"] == "T1"

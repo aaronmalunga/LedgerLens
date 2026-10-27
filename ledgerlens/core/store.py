@@ -81,7 +81,7 @@ class Store:
             return None
         tx, _, source_event_id = got
         entry_id = uuid.uuid4().hex[:8]
-        tier = evidence_tier(tx.source_type, tx.txn_id)
+        tier = evidence_tier(tx.source_type, tx.txn_id, tx.edited)
         with self.db:
             self.db.execute(
                 "INSERT INTO ledger VALUES (?,?,?,?,?,?,?,?,?)",
