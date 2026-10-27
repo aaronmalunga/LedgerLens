@@ -89,7 +89,7 @@ def test_accuracy_counts_and_wilson_interval_by_source(tmp_path, monkeypatch):
             gold_row("p.jpg", source="real", personal_proxy="Y", consent="Y")]
     images, labels, manifest = setup(tmp_path, rows, c, {k: "dev" for k in c})
     client = Scripted({b"A": tx(), b"B": tx(), b"C": tx(amount="999.00"), b"P": tx()})
-    md, payload = go(tmp_path, images, labels, manifest, client, monkeypatch=monkeypatch)
+    md, payload = go(tmp_path, images, labels, manifest, client, "--allow-real-data", monkeypatch=monkeypatch)
     lo, hi = wilson(2, 3)
     assert f"| simulated | record_correct | 2 / 3 | 66.7% | [{lo * 100:.1f}%, {hi * 100:.1f}%] |" in md
     assert "| simulated | amount | 2 / 3 |" in md and "| simulated | currency | 3 / 3 |" in md
@@ -166,9 +166,23 @@ def test_records_without_consent_are_never_sent(tmp_path, monkeypatch):
             gold_row("no.jpg", source="real", personal_proxy="N", consent="")]
     images, labels, manifest = setup(tmp_path, rows, c, {k: "dev" for k in c})
     client = Scripted({b"K": tx()})
-    _, payload = go(tmp_path, images, labels, manifest, client, monkeypatch=monkeypatch)
+    _, payload = go(tmp_path, images, labels, manifest, client, "--allow-real-data", monkeypatch=monkeypatch)
     assert client.seen == [b"K"]
     assert payload["skipped"]["no consent recorded (never sent to a model)"] == 1
+
+
+def test_data_use_gate_withholds_real_records_by_default(tmp_path, monkeypatch):
+    c = {"r.jpg": b"R", "s.jpg": b"S"}
+    rows = [gold_row("r.jpg", source="real", personal_proxy="Y", consent="Y"), gold_row("s.jpg")]
+    images, labels, manifest = setup(tmp_path, rows, c, {k: "dev" for k in c})
+    client = Scripted({b"R": tx(), b"S": tx()})
+    md, payload = go(tmp_path, images, labels, manifest, client, monkeypatch=monkeypatch)
+    assert client.seen == [b"S"]  # the simulated record only
+    assert any("data-use gate" in k and v == 1 for k, v in payload["skipped"].items())
+    assert "personal_proxy" not in md
+    client2 = Scripted({b"R": tx(), b"S": tx()})
+    go(tmp_path, images, labels, manifest, client2, "--allow-real-data", monkeypatch=monkeypatch)
+    assert sorted(client2.seen) == [b"R", b"S"]
 
 
 @pytest.mark.parametrize("row, msg", [

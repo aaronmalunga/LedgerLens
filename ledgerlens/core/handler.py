@@ -15,7 +15,8 @@ from .store import Store
 
 HELP = ("I'm LedgerLens. Send me a photo of a receipt or notebook page, a mobile-money SMS, "
         "or a voice note about a sale. I'll read it, you confirm it, and I keep your ledger. "
-        "Type 'summary' for your totals.")
+        "Type 'summary' for your totals. "
+        "Demo notice: please send sample or made-up records only, never your real ones.")
 OUT_OF_SCOPE = ("Sorry, I can only help with your business records: receipts, payments, sales "
                 "and your ledger. " + HELP)
 SMS_HINT = re.compile(r"(\b[RK] ?\d|ZMW|ZAR|reserved|purchase|txn|trans(action)?\s*id|ref(erence)?|received|sent|paid|airtel|mtn|momo|balance)", re.I)
