@@ -256,6 +256,8 @@ def parse_args(argv) -> argparse.Namespace:
     ap.add_argument("--split", choices=["dev", "holdout"], default="dev")
     ap.add_argument("--confirm-holdout", action="store_true", help="required for --split holdout")
     ap.add_argument("--rerun-holdout", action="store_true", help="allow a second hold-out run (logged as a rerun)")
+    ap.add_argument("--allow-real-data", action="store_true",
+                    help="send real (non-simulated) records to the model API. OFF by default: D-12, free-credit terms")
     ap.add_argument("--predictions", type=Path, help="score a manual-entry CSV instead of calling the model")
     ap.add_argument("--sources", help="comma list: real_trader,personal_proxy,simulated,public_benchmark")
     ap.add_argument("--limit", type=int, help="smoke test: only the first N records (by hash order)")
@@ -292,6 +294,7 @@ def run(a: argparse.Namespace, client_factory: Optional[Callable] = None) -> tup
     baseline = load_predictions(a.predictions) if a.predictions else None
 
     skipped = {"in other split": 0, "excluded by --sources": 0, "no consent recorded (never sent to a model)": 0,
+               "withheld by the data-use gate (D-12; pass --allow-real-data only if the terms allow it)": 0,
                "not in the baseline CSV": 0}
     chosen = []
     for g in gold:
@@ -304,6 +307,8 @@ def run(a: argparse.Namespace, client_factory: Optional[Callable] = None) -> tup
             skipped["not in the baseline CSV"] += 1
         elif baseline is None and not g.consent_ok:
             skipped["no consent recorded (never sent to a model)"] += 1
+        elif baseline is None and not a.allow_real_data and g.source in {"real_trader", "personal_proxy"}:
+            skipped["withheld by the data-use gate (D-12; pass --allow-real-data only if the terms allow it)"] += 1
         else:
             chosen.append((sha, g))
     chosen.sort(key=lambda x: x[0])  # hash order: deterministic, not hand-picked

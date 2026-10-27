@@ -28,7 +28,7 @@ python -m eval.run_eval --labels data/labels.csv --images data/images           
 python -m eval.run_eval --labels data/labels.csv --images data/images --predictions data/baseline.csv   # manual-entry baseline, same scorer
 python -m eval.run_eval --labels data/labels.csv --images data/images --split holdout --confirm-holdout  # once, after the freeze
 ```
-The harness prints accuracy per source with n and a 95% Wilson interval, plus error rate, p50/p95 latency and (when prices are supplied) cost per message. Failures count as wrong answers in the same denominator. The hold-out run is logged in `eval/holdout_runs.jsonl`.
+Real (non-simulated) records are withheld from the model API unless `--allow-real-data` is passed (D-12: the free-credit terms say content may be used for product improvement). The harness prints accuracy per source with n and a 95% Wilson interval, plus error rate, p50/p95 latency and (when prices are supplied) cost per message. Failures count as wrong answers in the same denominator. The hold-out run is logged in `eval/holdout_runs.jsonl`.
 
 ## Built with
 Meta Model API (Muse Spark; Muse Voice Transcribe and SAM 3.1 planned). Code written with AI coding assistance (Claude); all design decisions are recorded with their reasoning in `DECISIONS.md`.
