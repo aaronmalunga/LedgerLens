@@ -70,6 +70,7 @@ class Core:
             return [_text(REFUSALS[reason])]
         try:
             tx = self.model.extract(media=ev.media, mime=ev.media_mime, text=ev.text, source_hint=source)
+            tx = tx.model_copy(update={"edited": False})  # only the trader's own edit may set this, never the model
             usage = getattr(self.model, "last_usage", None)
             if usage:
                 self.guard.record_usage(*usage)
@@ -99,9 +100,11 @@ class Core:
         tx, _, _ = self.store.get_pending(ev.user_ref, pid)
         try:
             if field == "amount":
-                tx = tx.model_copy(update={"amount": Decimal(value.replace(",", ""))})
+                new_amount = Decimal(value.replace(",", ""))
+                tx = tx.model_copy(update={"amount": new_amount, "edited": tx.edited or new_amount != tx.amount})
             elif field == "date":
-                tx = Transaction.model_validate({**tx.model_dump(), "date": value})
+                new = Transaction.model_validate({**tx.model_dump(), "date": value})
+                tx = new.model_copy(update={"edited": tx.edited or new.date != tx.date})
             else:
                 tx = tx.model_copy(update={"counterparty": value})
         except (InvalidOperation, ValueError):
@@ -136,12 +139,13 @@ def _text(s: str) -> OutboundMessage:
 
 def _confirm_card(pid: str, tx: Transaction) -> OutboundMessage:
     issues = check_transaction(tx)
-    tier = evidence_tier(tx.source_type, tx.txn_id)
+    tier = evidence_tier(tx.source_type, tx.txn_id, tx.edited)
     arrow = "Money in" if tx.direction.value == "in" else "Money out"
     lines = [f"{arrow}: {tx.currency} {tx.amount}",
              f"Date: {tx.date or 'not found'}",
              f"Who: {tx.counterparty or 'not found'}",
-             f"Evidence: {tier.value}" + (f" (ref {tx.txn_id})" if tx.txn_id else "")]
+             f"Evidence: {tier.value}" + (f" (ref {tx.txn_id})" if tx.txn_id else "")
+             + (" - you edited this, so it counts as self-reported" if tx.edited else "")]
     if tx.status.value == "reserved":
         lines.append("Note: this is a card hold, not a completed payment. It won't count in totals.")
     lines += [f"⚠ {i.message}" for i in issues]

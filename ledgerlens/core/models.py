@@ -33,9 +33,10 @@ class EvidenceTier(str, Enum):
     T3 = "T3"  # self-reported: voice note, notebook page
 
 
-def evidence_tier(source: SourceType, txn_id: Optional[str]) -> EvidenceTier:
-    """Deterministic, not model-decided (D-07 + D-08)."""
-    if source in (SourceType.VOICE, SourceType.NOTEBOOK):
+def evidence_tier(source: SourceType, txn_id: Optional[str], edited: bool = False) -> EvidenceTier:
+    """Deterministic, not model-decided (D-07 + D-08). A trader-edited amount or date no longer matches the
+    third-party record, so the line is self-reported: T3 (D-13, closes review finding F3)."""
+    if edited or source in (SourceType.VOICE, SourceType.NOTEBOOK):
         return EvidenceTier.T3
     return EvidenceTier.T1 if txn_id else EvidenceTier.T2
 
@@ -58,6 +59,7 @@ class Transaction(BaseModel):
     txn_id: Optional[str] = None
     source_type: SourceType
     business: bool = True  # business vs personal (open product question; default business)
+    edited: bool = False  # set only by the core when the trader changes amount or date; never by the model
 
 
 class ValidationIssue(BaseModel):
