@@ -1,0 +1,47 @@
+name: CI
+
+# Runs on every pull request (any base branch, so stacked PRs are covered) and on pushes to main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        # 3.12 = floor of the pinned wheels; 3.14 = the version used on the dev laptop.
+        python-version: ["3.12", "3.14"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+          cache-dependency-path: requirements.txt
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+
+  no-private-data:
+    # Consent + WhatsApp terms 4.7: trader records and labels must never reach the repo.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fail if record files or label CSVs are tracked
+        run: |
+          bad=$(git ls-files | grep -Ei '\.(jpe?g|png|heic|ogg|opus|m4a|mp3|wav|db)$|(^|/)labels[^/]*\.csv$|(^|/)\.env$' | grep -v '^eval/labels_template\.csv$' || true)
+          if [ -n "$bad" ]; then
+            echo "Tracked files that must never be committed:"; echo "$bad"; exit 1
+          fi
+          echo "No record files, label CSVs or secrets tracked."
