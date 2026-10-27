@@ -1,0 +1,17 @@
+# Never commit trader or contributor data (consent + WhatsApp terms 4.7).
+data/
+*.jpg
+*.jpeg
+*.png
+*.heic
+*.ogg
+*.opus
+*.m4a
+*.mp3
+labels*.csv
+!eval/labels_template.csv
+.env
+*.db
+__pycache__/
+.pytest_cache/
+.venv/
