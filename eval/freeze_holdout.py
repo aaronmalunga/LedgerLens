@@ -66,7 +66,7 @@ def main() -> None:
     ap.add_argument("--all-holdout", action="store_true")
     a = ap.parse_args()
 
-    with a.labels.open(newline="", encoding="utf-8") as f:
+    with a.labels.open(newline="", encoding="utf-8-sig") as f:  # utf-8-sig: Excel saves a BOM that breaks the `file` header
         rows = list(csv.DictReader(f))
         fields = list(rows[0].keys()) if rows else []
     file_type = {r["file"]: r["type"] for r in rows}
