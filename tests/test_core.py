@@ -114,3 +114,40 @@ def test_holdout_tops_up_to_20_percent_per_type():
     existing = [{"type": "receipt", "split": s} for s in first.values()]
     second = assign({f"b{i}": "receipt" for i in range(5)}, existing)
     assert sum(s == "holdout" for s in second.values()) == 1  # 15 seen -> 3 held in total
+
+
+# --- D-10 demo guard ---
+from ledgerlens.core.guard import Guard, GuardConfig
+
+
+def test_oversized_image_refused_before_model_call():
+    c = Core(Store(), FakeModelClient(), Guard(GuardConfig(max_image_bytes=10)))
+    out = c.handle(ev("m1", InboundKind.IMAGE, media=b"x" * 11))
+    assert "too large" in out[0].text
+
+
+def test_rate_limit_per_user():
+    t = [0.0]
+    g = Guard(GuardConfig(rate_limit=2, rate_window_s=60), clock=lambda: t[0])
+    c = Core(Store(), FakeModelClient(), g)
+    c.handle(ev("m1", InboundKind.TEXT, text="hi"))
+    c.handle(ev("m2", InboundKind.TEXT, text="hi"))
+    assert "quickly" in c.handle(ev("m3", InboundKind.TEXT, text="hi"))[0].text
+    t[0] = 61.0
+    assert "LedgerLens" in c.handle(ev("m4", InboundKind.TEXT, text="hi"))[0].text
+
+
+def test_budget_pauses_model_calls_but_demo_still_works():
+    g = Guard(GuardConfig(daily_usd_cap=0.001))
+    g.record_usage(1_000_000, 0)  # $1.25 spent: over the cap
+    c = Core(Store(), FakeModelClient(), g)
+    assert "paused" in c.handle(ev("m1", InboundKind.IMAGE, media=b"x"))[0].text
+    assert "SIMULATED" in c.handle(ev("m2", InboundKind.TEXT, text="demo"))[0].text
+    assert "ZMW" in c.handle(ev("m3", InboundKind.TEXT, text="summary"))[0].text
+
+
+def test_demo_summary_shows_evidence_share():
+    c = core_with()
+    c.handle(ev("m1", InboundKind.TEXT, text="demo"))
+    s = c.handle(ev("m2", InboundKind.TEXT, text="summary"))[0].text
+    assert "money in 625.00" in s and "Income backed by receipts/SMS: 38%" in s

@@ -7,6 +7,8 @@ from decimal import Decimal, InvalidOperation
 from ledgerlens.llm.client import ModelClient
 
 from .checks import check_transaction
+from .demo import DEMO_LABEL, DEMO_TRANSACTIONS
+from .guard import REFUSALS, Guard
 from .events import Button, InboundEvent, InboundKind, OutboundKind, OutboundMessage
 from .models import SourceType, Transaction, evidence_tier
 from .store import Store
@@ -21,13 +23,16 @@ EDIT_PATTERN = re.compile(r"^\s*(amount|date|counterparty)\s+(.+)$", re.I)
 
 
 class Core:
-    def __init__(self, store: Store, model: ModelClient) -> None:
+    def __init__(self, store: Store, model: ModelClient, guard: Guard | None = None) -> None:
         self.store = store
         self.model = model
+        self.guard = guard or Guard()
 
     def handle(self, ev: InboundEvent) -> list[OutboundMessage]:
         if not self.store.mark_processed(ev.event_id):
             return []  # duplicate delivery: already answered once
+        if reason := self.guard.check_message(ev.user_ref, ev.media):
+            return [_text(REFUSALS[reason])]
         if ev.kind == InboundKind.BUTTON_REPLY:
             return self._button(ev)
         if ev.kind == InboundKind.IMAGE:
@@ -45,6 +50,8 @@ class Core:
             return [_text(HELP)]
         if body.lower() == "summary":
             return [_text(self._summary(ev.user_ref))]
+        if body.lower() == "demo":
+            return [_text(self._seed_demo(ev))]
         pid = self.store.latest_awaiting_edit(ev.user_ref)
         if pid and (m := EDIT_PATTERN.match(body)):
             return self._apply_edit(ev, pid, m.group(1).lower(), m.group(2).strip())
@@ -53,8 +60,13 @@ class Core:
         return [_text(OUT_OF_SCOPE)]  # narrow scope: WhatsApp terms 4.7
 
     def _propose(self, ev: InboundEvent, source: SourceType) -> list[OutboundMessage]:
+        if reason := self.guard.check_budget():
+            return [_text(REFUSALS[reason])]
         try:
             tx = self.model.extract(media=ev.media, mime=ev.media_mime, text=ev.text, source_hint=source)
+            usage = getattr(self.model, "last_usage", None)
+            if usage:
+                self.guard.record_usage(*usage)
         except Exception:
             return [_text("I couldn't read that one. Could you send a clearer photo, or type the amount and date?")]
         pid = self.store.add_pending(ev.user_ref, tx, ev.event_id)
@@ -90,6 +102,14 @@ class Core:
             return [_text(f"I couldn't use '{value}' as the {field}. Try again.")]
         self.store.update_pending(ev.user_ref, pid, tx, "awaiting_confirm")
         return [_confirm_card(pid, tx)]
+
+    def _seed_demo(self, ev: InboundEvent) -> str:
+        if self.store.entries(ev.user_ref):
+            return "Your session already has entries, so I didn't add the sample. Type 'summary'."
+        for i, tx in enumerate(DEMO_TRANSACTIONS):
+            pid = self.store.add_pending(ev.user_ref, tx, f"demo:{ev.event_id}:{i}")
+            self.store.confirm(ev.user_ref, pid)
+        return f"Loaded a sample ledger: {DEMO_LABEL}. Type 'summary' to see it."
 
     def _summary(self, user_ref: str) -> str:
         totals = self.store.totals(user_ref)

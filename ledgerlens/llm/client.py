@@ -56,6 +56,8 @@ class MetaModelClient:
             response_format={"type": "json_object"},
             temperature=0,
         )
+        u = resp.usage
+        self.last_usage = (u.prompt_tokens, u.completion_tokens) if u else None
         return Transaction.model_validate_json(resp.choices[0].message.content)
 
 
