@@ -8,8 +8,12 @@ import uuid
 from typing import Optional
 
 from fastapi import FastAPI
+from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
+from ledgerlens.core.creditfile import build_credit_file
+from ledgerlens.core.creditfile_html import render_html
+from ledgerlens.core.demo import DEMO_LABEL, demo_history
 from ledgerlens.core.events import Channel, InboundEvent, InboundKind
 from ledgerlens.core.handler import Core
 from ledgerlens.core.store import Store
@@ -46,3 +50,21 @@ def chat(body: ChatIn) -> dict:
     )
     out = core.handle(ev)
     return {"messages": [m.model_dump(exclude={"attachment"}) for m in out]}
+
+
+def _user_ref(session_id: str) -> str:
+    return hashlib.sha256(f"web:{session_id}".encode()).hexdigest()[:16]
+
+
+@app.get("/credit-file/demo", response_class=HTMLResponse)
+def credit_file_demo() -> HTMLResponse:
+    """The SIMULATED sample file (F12). No model call, no upload, no cost: safe to leave public."""
+    return HTMLResponse(render_html(build_credit_file(demo_history()), DEMO_LABEL))
+
+
+@app.get("/credit-file", response_class=HTMLResponse)
+def credit_file(session_id: str) -> HTMLResponse:
+    """The signed-in session's own confirmed ledger. Same renderer, same numbers as the 'credit file' chat command."""
+    rows = core.store.entries(_user_ref(session_id))
+    demo = any(r["source_event_id"].startswith("demo:") for r in rows)
+    return HTMLResponse(render_html(build_credit_file(rows), DEMO_LABEL if demo else ""))

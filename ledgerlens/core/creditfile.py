@@ -88,13 +88,16 @@ def build_credit_file(entries: list[dict]) -> dict:
                            "in_share_by_tier": _shares(v["in_by_tier"], v["in"])} for k, v in sorted(months.items())},
             "total_in": _q(total_in),
             "in_share_by_tier": _shares(tier_in, total_in),
+            "weekly_in": [{"week_start": (_week_start(first) + dt.timedelta(days=7 * i)).isoformat(), "in": _q(x)}
+                          for i, x in enumerate(weeks)],
             "weeks_covered": len(weeks), "weeks_with_sales": sum(1 for x in weeks if x > 0),
             "weekly_in_min": _q(min(weeks)), "weekly_in_median": _q(median(weeks)), "weekly_in_max": _q(max(weeks)),
         }
     out["currencies"] = cur
     out["lines"] = [{"entry_id": e["entry_id"], "date": tx.date.isoformat(), "currency": tx.currency,
                      "direction": tx.direction.value, "amount": _q(tx.amount), "tier": e["tier"],
-                     "source_type": tx.source_type.value} for e, tx in sorted(lines, key=lambda x: (x[1].date, x[0]["entry_id"]))]
+                     "source_type": tx.source_type.value, "edited": tx.edited,
+                     "counterparty": tx.counterparty, "txn_id": tx.txn_id} for e, tx in sorted(lines, key=lambda x: (x[1].date, x[0]["entry_id"]))]
     return out
 
 
