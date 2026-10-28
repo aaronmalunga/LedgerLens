@@ -8,6 +8,8 @@ import uuid
 from typing import Optional
 
 from fastapi import FastAPI
+from pathlib import Path
+
 from fastapi.responses import HTMLResponse
 from pydantic import BaseModel
 
@@ -16,8 +18,11 @@ from ledgerlens.core.creditfile_html import render_html
 from ledgerlens.core.demo import DEMO_LABEL, demo_history
 from ledgerlens.core.events import Channel, InboundEvent, InboundKind
 from ledgerlens.core.handler import Core
+from ledgerlens.core.models import SourceType
 from ledgerlens.core.store import Store
 from ledgerlens.llm.client import make_client
+
+CHAT_PAGE = (Path(__file__).parent / "chat.html").read_text(encoding="utf-8")
 
 app = FastAPI(title="LedgerLens web chat")
 core = Core(Store(os.environ.get("LEDGERLENS_DB", ":memory:")), make_client())
@@ -30,6 +35,12 @@ class ChatIn(BaseModel):
     image_b64: Optional[str] = None
     image_mime: Optional[str] = None
     button_id: Optional[str] = None
+    source_hint: Optional[SourceType] = None  # receipt | sms | notebook, declared by the person
+
+
+@app.get("/", response_class=HTMLResponse)
+def home() -> HTMLResponse:
+    return HTMLResponse(CHAT_PAGE)
 
 
 @app.post("/chat")
@@ -46,7 +57,7 @@ def chat(body: ChatIn) -> dict:
         user_ref=hashlib.sha256(f"web:{body.session_id}".encode()).hexdigest()[:16],
         kind=kind, text=body.text, button_id=body.button_id,
         media=base64.b64decode(body.image_b64) if body.image_b64 else None,
-        media_mime=body.image_mime,
+        media_mime=body.image_mime, source_hint=body.source_hint,
     )
     out = core.handle(ev)
     return {"messages": [m.model_dump(exclude={"attachment"}) for m in out]}

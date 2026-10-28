@@ -147,6 +147,18 @@ def render_html(cf: dict, label: str = "") -> str:
                      f'{x["reserved_or_reversed"]} reserved or reversed (not completed payments) · {x["personal"]} marked personal · '
                      f'{x["undated"]} with no date · {x["sum_mismatch_flagged"]} whose lines did not add up to their total '
                      '(flagged to the trader; still counted because the trader confirmed them)</div></div>')
+    parts.append('<div class="card"><h2>How to read this page</h2><div class="sub" style="line-height:1.6">'
+                 '<span class="chip t1">T1</span> a record from a third party that carries a transaction ID (for example a mobile-money SMS). '
+                 'The strongest evidence on this page.<br>'
+                 '<span class="chip t2">T2</span> a printed receipt or an SMS with no transaction ID.<br>'
+                 '<span class="chip t3">T3</span> written or spoken by the trader (notebook page, voice note), or edited by the trader after reading. '
+                 'Useful, but it is the trader\'s own word.<br>'
+                 '<span class="ed">edited by trader</span> the trader changed the amount or date, so the line counts as T3.<br>'
+                 '<b>Striped bar</b> a week with no record at all. <b>ZMW and ZAR</b> are different currencies and are never added together.<br>'
+                 '<b>Entry</b> the line\'s reference, so you can ask the trader about it. '
+                 '<b>Left out</b> (section 6) means kept off the totals: reserved or reversed payments, personal spending, undated lines.<br>'
+                 '<b>SIMULATED</b> means made-up sample data, not a real trader. This page describes records; it gives no score and no loan advice.'
+                 '</div></div>')
     parts.append(f'<div class="card note"><b>What this file does not provide.</b> {_e(cf["not_provided"])}</div>')
     parts.append(f'<div class="foot">{_e(cf["footer"])}</div></div></body></html>')
     return "".join(parts)
