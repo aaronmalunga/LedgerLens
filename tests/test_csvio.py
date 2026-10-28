@@ -33,6 +33,7 @@ def test_comma_file_is_left_alone(tmp_path):
 def test_slash_iso_date_parses():
     assert str(norm_date("2026/10/12")) == "2026-10-12"
     assert str(norm_date("12/10/2026")) == "2026-10-12"  # day-first still works
+    assert str(norm_date("12.10.2026")) == "2026-10-12"  # dots, as some regional settings write them
 
 
 def test_freeze_keeps_the_semicolon_delimiter(tmp_path):
