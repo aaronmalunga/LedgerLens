@@ -38,7 +38,7 @@ class Core:
         if ev.kind == InboundKind.BUTTON_REPLY:
             return self._button(ev)
         if ev.kind == InboundKind.IMAGE:
-            return self._propose(ev, SourceType.RECEIPT)
+            return self._propose(ev, ev.source_hint or SourceType.RECEIPT)
         if ev.kind == InboundKind.AUDIO:
             return [_text("Voice notes are coming soon (planned for this build). For now, send a photo or SMS.")]
         if ev.kind == InboundKind.TEXT:
@@ -70,7 +70,9 @@ class Core:
             return [_text(REFUSALS[reason])]
         try:
             tx = self.model.extract(media=ev.media, mime=ev.media_mime, text=ev.text, source_hint=source)
-            tx = tx.model_copy(update={"edited": False})  # only the trader's own edit may set this, never the model
+            # Only the trader's own edit may set `edited`, and only the trader's declared record type sets
+            # `source_type` (D-14): the evidence tier follows from these two, so the model must not choose it.
+            tx = tx.model_copy(update={"edited": False, "source_type": source})
             usage = getattr(self.model, "last_usage", None)
             if usage:
                 self.guard.record_usage(*usage)

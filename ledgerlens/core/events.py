@@ -7,6 +7,8 @@ from typing import Optional
 
 from pydantic import BaseModel, Field, field_validator
 
+from .models import SourceType
+
 
 class Channel(str, Enum):
     WHATSAPP = "whatsapp"
@@ -31,6 +33,8 @@ class InboundEvent(BaseModel):
     media: Optional[bytes] = None
     media_mime: Optional[str] = None
     button_id: Optional[str] = None
+    source_hint: Optional[SourceType] = Field(
+        default=None, description="What the sender says this image is (receipt, notebook, sms). Declared by the person, not guessed by the model.")
     received_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 

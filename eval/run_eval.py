@@ -44,7 +44,7 @@ from eval.scoring import KEY_FIELDS, field_correct, norm_amount, norm_date  # no
 from ledgerlens.core.events import Channel, InboundEvent, InboundKind, OutboundKind  # noqa: E402
 from ledgerlens.core.guard import REFUSALS, Guard, GuardConfig  # noqa: E402
 from ledgerlens.core.handler import Core  # noqa: E402
-from ledgerlens.core.models import Transaction  # noqa: E402
+from ledgerlens.core.models import SourceType, Transaction  # noqa: E402
 from ledgerlens.core.store import Store  # noqa: E402
 from ledgerlens.llm.client import FakeModelClient, make_client  # noqa: E402
 
@@ -199,11 +199,12 @@ class Recorder:
         return tx
 
 
-def build_event(path: Path, ref: str, sha: str) -> InboundEvent:
+def build_event(path: Path, ref: str, sha: str, record_type: Optional[str] = None) -> InboundEvent:
     ext = path.suffix.lower()
     base = dict(event_id=f"eval-{sha[:16]}", channel=Channel.EVAL, user_ref=ref)
     if ext in IMAGE_MIME:
-        return InboundEvent(kind=InboundKind.IMAGE, media=path.read_bytes(), media_mime=IMAGE_MIME[ext], **base)
+        hint = SourceType(record_type) if record_type in {t.value for t in SourceType} else None
+        return InboundEvent(kind=InboundKind.IMAGE, media=path.read_bytes(), media_mime=IMAGE_MIME[ext], source_hint=hint, **base)
     if ext in AUDIO_MIME:
         return InboundEvent(kind=InboundKind.AUDIO, media=path.read_bytes(), media_mime=AUDIO_MIME[ext], **base)
     if ext == ".txt":
@@ -343,7 +344,7 @@ def run(a: argparse.Namespace, client_factory: Optional[Callable] = None) -> tup
         # limit stays on purpose, so a photo the demo would refuse shows up as `refused` instead of being hidden.
         core = Core(Store(), rec, Guard(GuardConfig(rate_limit=10**9, daily_usd_cap=1e12, daily_call_cap=10**9)))
         for i, (sha, g) in enumerate(chosen, 1):
-            ev = build_event(a.images / g.file, f"eval-{sha[:12]}", sha)
+            ev = build_event(a.images / g.file, f"eval-{sha[:12]}", sha, g.type)
             pred, outcome, dt, usage = run_through_core(core, rec, ev)
             fo, ro = score(g.fields, pred)
             results.append(dict(file=g.file, sha=sha[:12], source=g.source, type=g.type, outcome=outcome,
