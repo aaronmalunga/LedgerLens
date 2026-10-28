@@ -39,7 +39,7 @@ td{padding:7px 4px;border-bottom:1px solid var(--line)}td.n,th.n{text-align:righ
 .note{background:rgba(31,111,92,.08);border-left:4px solid var(--acc);padding:10px 12px;border-radius:6px;font-size:14px}
 .foot{margin-top:18px;font-size:13px;color:var(--mute);border-top:1px solid var(--line);padding-top:12px}
 details summary{cursor:pointer;font-weight:600;color:var(--acc);margin:6px 0}
-@media print{body{background:#fff}.card{break-inside:avoid;border-color:#ccc}details{display:block}details>summary{display:none}}
+@media print{.noprint{display:none}body{background:#fff}.card{break-inside:avoid;border-color:#ccc}details{display:block}details>summary{display:none}}
 """
 
 
@@ -83,13 +83,15 @@ def _weeks_chart(weekly: list[dict]) -> str:
     return f'<div class="weeks">{"".join(bars)}</div>'
 
 
-def render_html(cf: dict, label: str = "") -> str:
+def render_html(cf: dict, label: str = "", pdf_href: str = "") -> str:
     parts = [f"<!doctype html><html lang=\"en\"><head><meta charset=\"utf-8\">"
              f"<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">"
              f"<title>LedgerLens credit-readiness summary</title><style>{CSS}</style></head><body><div class=\"wrap\">"]
     if label:
         parts.append(f'<div class="banner">{_e(label)}. Figures below come from the demo history, not from a real business.</div>')
     parts.append("<h1>Credit-readiness summary</h1>")
+    if pdf_href:
+        parts.append(f'<p class="noprint"><a href="{_e(pdf_href)}">Download as PDF</a></p>')
     if not cf["n_lines"]:
         parts.append('<div class="card">No confirmed, dated business entries yet, so there is nothing to summarise.</div>')
     else:

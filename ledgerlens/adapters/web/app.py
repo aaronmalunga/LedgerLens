@@ -5,16 +5,18 @@ import base64
 import hashlib
 import os
 import uuid
+from urllib.parse import quote
 from typing import Optional
 
 from fastapi import FastAPI
 from pathlib import Path
 
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, Response
 from pydantic import BaseModel
 
 from ledgerlens.core.creditfile import build_credit_file
 from ledgerlens.core.creditfile_html import render_html
+from ledgerlens.core.creditfile_pdf import render_pdf
 from ledgerlens.core.demo import DEMO_LABEL, demo_history
 from ledgerlens.core.events import Channel, InboundEvent, InboundKind
 from ledgerlens.core.handler import Core
@@ -70,7 +72,7 @@ def _user_ref(session_id: str) -> str:
 @app.get("/credit-file/demo", response_class=HTMLResponse)
 def credit_file_demo() -> HTMLResponse:
     """The SIMULATED sample file (F12). No model call, no upload, no cost: safe to leave public."""
-    return HTMLResponse(render_html(build_credit_file(demo_history()), DEMO_LABEL))
+    return HTMLResponse(render_html(build_credit_file(demo_history()), DEMO_LABEL, "/credit-file/demo.pdf"))
 
 
 @app.get("/credit-file", response_class=HTMLResponse)
@@ -78,4 +80,21 @@ def credit_file(session_id: str) -> HTMLResponse:
     """The signed-in session's own confirmed ledger. Same renderer, same numbers as the 'credit file' chat command."""
     rows = core.store.entries(_user_ref(session_id))
     demo = any(r["source_event_id"].startswith("demo:") for r in rows)
-    return HTMLResponse(render_html(build_credit_file(rows), DEMO_LABEL if demo else ""))
+    return HTMLResponse(render_html(build_credit_file(rows), DEMO_LABEL if demo else "", f"/credit-file.pdf?session_id={quote(session_id)}"))
+
+
+def _pdf(rows, label: str, name: str) -> Response:
+    return Response(render_pdf(build_credit_file(rows), label), media_type="application/pdf",
+                    headers={"Content-Disposition": f'attachment; filename="{name}"'})
+
+
+@app.get("/credit-file/demo.pdf")
+def credit_file_demo_pdf() -> Response:
+    return _pdf(demo_history(), DEMO_LABEL, "ledgerlens-credit-file-SIMULATED.pdf")
+
+
+@app.get("/credit-file.pdf")
+def credit_file_pdf(session_id: str) -> Response:
+    rows = core.store.entries(_user_ref(session_id))
+    demo = any(r["source_event_id"].startswith("demo:") for r in rows)
+    return _pdf(rows, DEMO_LABEL if demo else "", "ledgerlens-credit-file.pdf")
