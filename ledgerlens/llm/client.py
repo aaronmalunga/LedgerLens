@@ -31,6 +31,11 @@ def assert_standard_model(model_id: str) -> None:
         raise ContributorModelError(f"Refusing model {model_id!r}: standard (non-contributor) models only.")
 
 
+# Meta docs ("Reasoning"): Muse Spark 1.3 accepts these on Chat Completions; "none" returns HTTP 400.
+# Reasoning tokens are billed as output tokens, so a lower effort cuts cost and latency.
+REASONING_EFFORTS = ("minimal", "low", "medium", "high", "xhigh", "max")
+
+
 class MetaModelClient:
     def __init__(self) -> None:
         from openai import OpenAI  # imported lazily so tests run without network
@@ -39,6 +44,12 @@ class MetaModelClient:
         self.text_model = os.environ.get("LEDGERLENS_TEXT_MODEL", self.vision_model)
         assert_standard_model(self.vision_model)
         assert_standard_model(self.text_model)
+        self.reasoning_effort = os.environ.get("LEDGERLENS_REASONING_EFFORT") or None  # None = model decides
+        if self.reasoning_effort and self.reasoning_effort not in REASONING_EFFORTS:
+            raise ValueError(f"LEDGERLENS_REASONING_EFFORT must be one of {REASONING_EFFORTS}, got {self.reasoning_effort!r}")
+        self.last_usage = None
+        self.last_model = None
+        self.last_reasoning_tokens = None
         # Meta's docs call the key MODEL_API_KEY; META_API_KEY is accepted too.
         self.client = OpenAI(api_key=os.environ.get("META_API_KEY") or os.environ["MODEL_API_KEY"],
                              base_url=os.environ.get("META_BASE_URL", "https://api.meta.ai/v1"))
@@ -51,6 +62,7 @@ class MetaModelClient:
             content.append({"type": "image_url", "image_url": {"url": f"data:{mime};base64,{b64}"}})
         if text:
             content.append({"type": "text", "text": f"<record>{text}</record>"})
+        extra = {"extra_body": {"reasoning_effort": self.reasoning_effort}} if self.reasoning_effort else {}
         resp = self.client.chat.completions.create(
             model=self.vision_model if media else self.text_model,
             messages=[{"role": "system", "content": prompt}, {"role": "user", "content": content}],
@@ -59,9 +71,13 @@ class MetaModelClient:
             response_format={"type": "json_schema",
                              "json_schema": {"name": "Transaction", "schema": Transaction.model_json_schema()}},
             temperature=0,
+            **extra,
         )
         u = resp.usage
         self.last_usage = (u.prompt_tokens, u.completion_tokens) if u else None
+        self.last_model = getattr(resp, "model", None)  # what the API says it served: proves Standard vs Contributor
+        details = getattr(u, "completion_tokens_details", None) if u else None
+        self.last_reasoning_tokens = getattr(details, "reasoning_tokens", None)
         return Transaction.model_validate_json(resp.choices[0].message.content)
 
 

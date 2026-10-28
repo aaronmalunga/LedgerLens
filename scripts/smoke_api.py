@@ -3,6 +3,7 @@
 Run from the repo root:
     python scripts\\smoke_api.py                 # text only: a made-up mobile-money SMS
     python scripts\\smoke_api.py --image path\\to\\simulated_page.jpg   # optional image call
+    python scripts\\smoke_api.py --image ... --effort low             # try a lower reasoning effort
 
 Reads .env (LEDGERLENS_MODEL_BACKEND=meta, MODEL_API_KEY, LEDGERLENS_VISION_MODEL).
 Sends ONLY made-up data. Prints the parsed transaction, latency and token counts. The key is never printed.
@@ -30,8 +31,12 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--image", type=Path)
     ap.add_argument("--env-file", type=Path, default=Path(".env"))
+    ap.add_argument("--effort", choices=["minimal", "low", "medium", "high", "xhigh", "max"],
+                    help="reasoning effort (lower = faster and cheaper); omit to let the model decide")
     a = ap.parse_args()
     load_env_file(a.env_file)
+    if a.effort:
+        os.environ["LEDGERLENS_REASONING_EFFORT"] = a.effort
     missing = [k for k in ("LEDGERLENS_VISION_MODEL",) if not os.environ.get(k)]
     if not (os.environ.get("META_API_KEY") or os.environ.get("MODEL_API_KEY")):
         missing.append("MODEL_API_KEY")
@@ -39,7 +44,7 @@ def main() -> int:
         print("Missing in .env:", ", ".join(missing))
         return 2
     client = MetaModelClient()
-    print(f"model: {client.vision_model}  base_url: {client.client.base_url}")
+    print(f"model asked: {client.vision_model}  effort: {client.reasoning_effort or 'model decides'}  base_url: {client.client.base_url}")
     if a.image:
         media = a.image.read_bytes()
         mime = mimetypes.guess_type(a.image.name)[0] or "image/jpeg"
@@ -53,7 +58,8 @@ def main() -> int:
         print(f"FAILED after {time.perf_counter() - t0:.1f}s: {type(e).__name__}: {e}")
         return 1
     dt = time.perf_counter() - t0
-    print(f"OK in {dt:.1f}s; tokens (in, out): {getattr(client, 'last_usage', None)}")
+    print(f"OK in {dt:.1f}s; tokens (in, out): {client.last_usage}; of which reasoning: {client.last_reasoning_tokens}")
+    print(f"model the API says it served: {client.last_model}")
     print(tx.model_dump_json(indent=2))
     return 0
 
