@@ -26,7 +26,7 @@ def norm_date(v) -> Optional[date]:
         return None
     if isinstance(v, date):
         return v
-    for fmt in ("%Y-%m-%d", "%d/%m/%Y", "%d-%m-%Y", "%d/%m/%y", "%d %b %Y", "%d %B %Y"):
+    for fmt in ("%Y-%m-%d", "%Y/%m/%d", "%d/%m/%Y", "%d-%m-%Y", "%d/%m/%y", "%d %b %Y", "%d %B %Y"):
         try:
             return datetime.strptime(str(v).strip(), fmt).date()
         except ValueError:

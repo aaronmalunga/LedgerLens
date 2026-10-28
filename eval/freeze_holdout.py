@@ -18,9 +18,14 @@ import argparse
 import csv
 import hashlib
 import json
+import sys
 from collections import defaultdict
 from datetime import datetime, timezone
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # so `python eval/freeze_holdout.py` works
+
+from eval.csvio import read_dicts  # noqa: E402
 
 MANIFEST = Path(__file__).parent / "holdout_manifest.jsonl"
 FRACTION = 0.2
@@ -66,9 +71,7 @@ def main() -> None:
     ap.add_argument("--all-holdout", action="store_true")
     a = ap.parse_args()
 
-    with a.labels.open(newline="", encoding="utf-8-sig") as f:  # utf-8-sig: Excel saves a BOM that breaks the `file` header
-        rows = list(csv.DictReader(f))
-        fields = list(rows[0].keys()) if rows else []
+    rows, fields, delim = read_dicts(a.labels)  # keeps Excel's delimiter (comma or semicolon) and BOM handling
     file_type = {r["file"]: r["type"] for r in rows}
     file_hash = {fn: sha256(a.images / fn) for fn in file_type}
 
@@ -85,8 +88,10 @@ def main() -> None:
 
     for r in rows:
         r["holdout"] = "Y" if frozen[file_hash[r["file"]]] == "holdout" else "N"
-    with a.labels.open("w", newline="", encoding="utf-8") as f:
-        w = csv.DictWriter(f, fieldnames=fields)
+    if "holdout" not in fields:
+        fields.append("holdout")
+    with a.labels.open("w", newline="", encoding="utf-8-sig") as f:  # same delimiter back, so Excel opens it cleanly
+        w = csv.DictWriter(f, fieldnames=fields, delimiter=delim)
         w.writeheader()
         w.writerows(rows)
 

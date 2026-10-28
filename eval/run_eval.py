@@ -39,6 +39,7 @@ from pydantic import ValidationError  # noqa: E402
 
 from eval.freeze_holdout import MANIFEST, load_manifest, sha256  # noqa: E402
 from eval.report import FIELDS, ops_summary, render_markdown, tally  # noqa: E402
+from eval.csvio import read_dicts  # noqa: E402
 from eval.scoring import KEY_FIELDS, field_correct, norm_amount, norm_date  # noqa: E402
 from ledgerlens.core.events import Channel, InboundEvent, InboundKind, OutboundKind  # noqa: E402
 from ledgerlens.core.guard import REFUSALS, Guard, GuardConfig  # noqa: E402
@@ -91,12 +92,11 @@ def source_category(source: str, personal_proxy: str) -> str:
 
 
 def load_gold(path: Path) -> list[Gold]:
-    with path.open(newline="", encoding="utf-8-sig") as f:  # utf-8-sig: Excel adds a BOM
-        reader = csv.DictReader(f)
-        missing = [c for c in REQUIRED_COLUMNS if c not in (reader.fieldnames or [])]
-        if missing:
-            raise HarnessError(f"{path} is missing column(s): {', '.join(missing)}")
-        rows = [(i + 2, {k: (v or "").strip() for k, v in r.items() if k}) for i, r in enumerate(reader)]
+    dict_rows, fieldnames, _ = read_dicts(path)  # handles Excel's semicolon / decimal-comma / BOM output
+    missing = [c for c in REQUIRED_COLUMNS if c not in fieldnames]
+    if missing:
+        raise HarnessError(f"{path} is missing column(s): {', '.join(missing)}")
+    rows = [(i + 2, r) for i, r in enumerate(dict_rows)]
     by_file: dict[str, list[tuple[int, dict]]] = {}
     for line, r in rows:
         if r["file"]:
@@ -269,9 +269,8 @@ def parse_args(argv) -> argparse.Namespace:
 
 
 def load_predictions(path: Path) -> dict[str, dict]:
-    with path.open(newline="", encoding="utf-8-sig") as f:
-        rows = [{k: (v or "").strip() for k, v in r.items() if k} for r in csv.DictReader(f)]
-    if rows and "file" not in rows[0]:
+    rows, fieldnames, _ = read_dicts(path)
+    if rows and "file" not in fieldnames:
         raise HarnessError(f"{path} needs a `file` column")
     return {r["file"]: r for r in rows if r.get("file")}
 
