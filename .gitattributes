@@ -1,0 +1,6 @@
+# Keep line endings consistent between Windows and Linux so git diff shows real changes only.
+* text=auto eol=lf
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
