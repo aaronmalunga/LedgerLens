@@ -72,3 +72,21 @@ def test_routes_serve_the_demo_and_a_session_file():
     assert r.status_code == 200 and "SIMULATED" in r.text and r.headers["content-type"].startswith("text/html")
     r2 = c.get("/credit-file", params={"session_id": "nobody"})
     assert r2.status_code == 200 and "nothing to summarise" in r2.text
+
+
+def test_pdf_routes_return_a_real_pdf_with_the_same_rules():
+    import io
+    import re as _re
+
+    from pypdf import PdfReader
+    c = TestClient(app)
+    r = c.get("/credit-file/demo.pdf")
+    assert r.status_code == 200 and r.headers["content-type"] == "application/pdf" and r.content.startswith(b"%PDF")
+    text = " ".join(p.extract_text() for p in PdfReader(io.BytesIO(r.content)).pages)
+    assert "SIMULATED" in text and "Credit-readiness summary" in text and "How to read this file" in text
+    # the footer repeats on every page, so every "verified" must sit inside that one phrase
+    assert text.lower().count("verified") == text.count("Not verified by LedgerLens") >= 1
+    assert not _re.search(r"\bscore\b(?! *\.)", text.replace("Not a credit score.", "").replace("no score", ""), _re.I)
+    empty = c.get("/credit-file.pdf", params={"session_id": "nobody"})
+    assert empty.status_code == 200 and empty.content.startswith(b"%PDF")
+    assert "/credit-file/demo.pdf" in c.get("/credit-file/demo").text
