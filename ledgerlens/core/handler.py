@@ -5,6 +5,9 @@ import re
 from decimal import Decimal, InvalidOperation
 
 from ledgerlens.llm.client import ModelClient
+from ledgerlens.llm.transcribe import Transcriber
+
+from . import audio as audio_in
 
 from .checks import check_transaction
 from .creditfile import build_credit_file, render_text
@@ -25,10 +28,13 @@ EDIT_PATTERN = re.compile(r"^\s*(amount|date|counterparty)\s+(.+)$", re.I)
 
 
 class Core:
-    def __init__(self, store: Store, model: ModelClient, guard: Guard | None = None) -> None:
+    def __init__(self, store: Store, model: ModelClient, guard: Guard | None = None,
+                 transcriber: Transcriber | None = None, allow_audio_conversion: bool = False) -> None:
         self.store = store
         self.model = model
         self.guard = guard or Guard()
+        self.transcriber = transcriber  # None = voice notes are off in this deployment
+        self.allow_audio_conversion = allow_audio_conversion  # ffmpeg for non-WAV audio: off on the public web endpoint
 
     def handle(self, ev: InboundEvent) -> list[OutboundMessage]:
         if not self.store.mark_processed(ev.event_id):
@@ -40,7 +46,7 @@ class Core:
         if ev.kind == InboundKind.IMAGE:
             return self._propose(ev, ev.source_hint or SourceType.RECEIPT)
         if ev.kind == InboundKind.AUDIO:
-            return [_text("Voice notes are coming soon (planned for this build). For now, send a photo or SMS.")]
+            return self._voice(ev)
         if ev.kind == InboundKind.TEXT:
             return self._text(ev)
         return [_text(HELP)]
@@ -65,7 +71,32 @@ class Core:
             return self._propose(ev, SourceType.SMS)
         return [_text(OUT_OF_SCOPE)]  # narrow scope: WhatsApp terms 4.7
 
-    def _propose(self, ev: InboundEvent, source: SourceType) -> list[OutboundMessage]:
+    # --- voice (D-15): transcribe in memory, drop the audio, keep only the text ---
+    def _voice(self, ev: InboundEvent) -> list[OutboundMessage]:
+        if self.transcriber is None:
+            return [_text("Voice notes are switched off in this demo. Please send a photo or an SMS instead.")]
+        if reason := self.guard.check_budget():
+            return [_text(REFUSALS[reason])]
+        try:
+            wav, seconds = audio_in.to_wav(ev.media or b"", allow_conversion=self.allow_audio_conversion)
+        except audio_in.AudioError as e:
+            return [_text(audio_in.user_message(e))]
+        try:
+            transcript = self.transcriber.transcribe(wav)
+        except Exception:
+            return [_text("I couldn't turn that voice note into text. Please try again, or type the sale.")]
+        finally:
+            del wav  # the audio lives only in this call; nothing below keeps it
+        self.guard.record_audio(seconds)
+        transcript = (transcript or "").strip()
+        if not transcript:
+            return [_text(audio_in.user_message(audio_in.AudioError("empty")))]
+        # From here the event is plain text: the audio bytes are not carried forward or stored.
+        text_ev = ev.model_copy(update={"kind": InboundKind.TEXT, "media": None, "media_mime": None,
+                                        "text": f"Note received on {ev.received_at.date().isoformat()}. Transcript: {transcript}"})
+        return self._propose(text_ev, SourceType.VOICE, heard=transcript)
+
+    def _propose(self, ev: InboundEvent, source: SourceType, heard: str | None = None) -> list[OutboundMessage]:
         if reason := self.guard.check_budget():
             return [_text(REFUSALS[reason])]
         try:
@@ -79,7 +110,7 @@ class Core:
         except Exception:
             return [_text("I couldn't read that one. Could you send a clearer photo, or type the amount and date?")]
         pid = self.store.add_pending(ev.user_ref, tx, ev.event_id)
-        return [_confirm_card(pid, tx)]
+        return [_confirm_card(pid, tx, heard)]
 
     def _button(self, ev: InboundEvent) -> list[OutboundMessage]:
         action, _, pid = (ev.button_id or "").partition(":")
@@ -139,11 +170,11 @@ def _text(s: str) -> OutboundMessage:
     return OutboundMessage(kind=OutboundKind.TEXT, text=s)
 
 
-def _confirm_card(pid: str, tx: Transaction) -> OutboundMessage:
+def _confirm_card(pid: str, tx: Transaction, heard: str | None = None) -> OutboundMessage:
     issues = check_transaction(tx)
     tier = evidence_tier(tx.source_type, tx.txn_id, tx.edited)
     arrow = "Money in" if tx.direction.value == "in" else "Money out"
-    lines = [f"{arrow}: {tx.currency} {tx.amount}",
+    lines = ([f"I heard: \u201c{heard[:300]}\u201d"] if heard else []) + [f"{arrow}: {tx.currency} {tx.amount}",
              f"Date: {tx.date or 'not found'}",
              f"Who: {tx.counterparty or 'not found'}",
              f"Evidence: {tier.value}" + (f" (ref {tx.txn_id})" if tx.txn_id else "")

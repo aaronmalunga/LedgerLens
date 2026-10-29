@@ -28,6 +28,7 @@ class GuardConfig:
     daily_call_cap: int = int(os.environ.get("LEDGERLENS_DAILY_CALL_CAP", 1500))
     usd_per_m_input: float = _env_float("LEDGERLENS_USD_PER_M_INPUT", 1.25)       # set from the models docs
     usd_per_m_output: float = _env_float("LEDGERLENS_USD_PER_M_OUTPUT", 4.25)
+    usd_per_audio_hour: float = _env_float("LEDGERLENS_USD_PER_AUDIO_HOUR", 0.18)  # Muse Voice Transcribe list price
 
 
 @dataclass
@@ -63,6 +64,14 @@ class Guard:
             return "budget"
         return None
 
+    def record_audio(self, seconds: float) -> float:
+        """Transcription is billed per whole second of audio; it counts as one model call against the daily caps."""
+        self._roll_day()
+        cost = int(seconds) * self.cfg.usd_per_audio_hour / 3600
+        self.spent_usd += cost
+        self.calls += 1
+        return cost
+
     def record_usage(self, input_tokens: int, output_tokens: int) -> float:
         self._roll_day()
         cost = (input_tokens * self.cfg.usd_per_m_input + output_tokens * self.cfg.usd_per_m_output) / 1e6
@@ -72,7 +81,7 @@ class Guard:
 
 
 REFUSALS = {
-    "too_large": "That file is too large. Please send a photo under 5 MB.",
+    "too_large": "That file is too large. Please send a photo under 5 MB, or a voice note under a minute.",
     "rate_limited": "You're sending messages quickly. Please wait a few minutes and try again.",
     "budget": ("The live demo has reached today's usage limit and is paused until tomorrow (UTC). "
                "Type 'demo' to explore a sample ledger in the meantime, or watch the demo video."),

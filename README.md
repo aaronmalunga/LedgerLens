@@ -11,6 +11,7 @@ A WhatsApp-first bookkeeping assistant (with a web-chat fallback) that turns sma
 - **Nothing is saved without the trader's confirmation.** Each record becomes a confirm card (Confirm / Edit / Reject).
 - **Code does the maths** (D-08): line-item sums, totals and the exclusion of card holds are deterministic, not model-generated.
 - **Evidence tiers** (D-07): every ledger line is tagged T1 (third-party record with a transaction ID), T2 (receipt or SMS without one) or T3 (self-reported). The summary shows how much income is backed by T1/T2 evidence.
+- **Voice notes, English only (D-15):** the browser records a note, the core transcribes it in memory with Muse Voice Transcribe, discards the audio, and sends only the text through the same confirm card (tier T3). Audio is never stored by LedgerLens (a test checks the database). Meta's terms allow it to retain and review content, so only the builder's own voice reading made-up numbers is sent, and the public web mic is off unless the operator sets `LEDGERLENS_VOICE_WEB=1`.
 - **Standard Meta models only:** the client refuses any Contributor model ID, so trader data is never used for training.
 
 ## Run locally
@@ -31,4 +32,4 @@ python -m eval.run_eval --labels data/labels.csv --images data/images --split ho
 Real (non-simulated) records are withheld from the model API unless `--allow-real-data` is passed (D-12: the free-credit terms say content may be used for product improvement). The harness prints accuracy per source with n and a 95% Wilson interval, plus error rate, p50/p95 latency and (when prices are supplied) cost per message. Failures count as wrong answers in the same denominator. The hold-out run is logged in `eval/holdout_runs.jsonl`.
 
 ## Built with
-Meta Model API (Muse Spark; Muse Voice Transcribe and SAM 3.1 planned). Code written with AI coding assistance (Claude); all design decisions are recorded with their reasoning in `DECISIONS.md`.
+Meta Model API (Muse Spark; Muse Voice Transcribe built, not yet run against the live API; SAM 3.1 planned). Code written with AI coding assistance (Claude); all design decisions are recorded with their reasoning in `DECISIONS.md`.
