@@ -35,6 +35,7 @@ class InboundEvent(BaseModel):
     button_id: Optional[str] = None
     source_hint: Optional[SourceType] = Field(
         default=None, description="What the sender says this image is (receipt, notebook, sms). Declared by the person, not guessed by the model.")
+    client_ip: Optional[str] = Field(default=None, description="Network address the adapter saw, used only for rate limiting; never stored.")
     received_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 

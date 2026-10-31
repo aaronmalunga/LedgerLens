@@ -8,7 +8,7 @@ import uuid
 from urllib.parse import quote
 from typing import Optional
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from pathlib import Path
 
 from fastapi.responses import HTMLResponse, Response
@@ -58,8 +58,24 @@ def config() -> dict:
     return {"voice": core.transcriber is not None}
 
 
+def client_ip(request: Request) -> str | None:
+    """Address used for the per-IP limit (R-02).
+
+    Behind a platform proxy (Render) the socket address is the proxy's, so every visitor would share one
+    address. Set LEDGERLENS_PROXY_HOPS=1 there: we then take the entry the proxy itself appended to the
+    right of X-Forwarded-For. Entries to its left can be forged by the caller, so they are never used.
+    With the default of 0 the header is ignored (local runs, tests).
+    """
+    hops = int(os.environ.get("LEDGERLENS_PROXY_HOPS", 0))
+    if hops > 0:
+        parts = [p.strip() for p in request.headers.get("x-forwarded-for", "").split(",") if p.strip()]
+        if len(parts) >= hops:
+            return parts[-hops]
+    return request.client.host if request.client else None
+
+
 @app.post("/chat")
-def chat(body: ChatIn) -> dict:
+def chat(body: ChatIn, request: Request) -> dict:
     if body.button_id:
         kind = InboundKind.BUTTON_REPLY
     elif body.audio_b64:
@@ -76,6 +92,7 @@ def chat(body: ChatIn) -> dict:
         media=(base64.b64decode(body.audio_b64) if body.audio_b64
                else base64.b64decode(body.image_b64) if body.image_b64 else None),
         media_mime=body.audio_mime if body.audio_b64 else body.image_mime, source_hint=body.source_hint,
+        client_ip=client_ip(request),
     )
     out = core.handle(ev)
     return {"messages": [m.model_dump(exclude={"attachment"}) for m in out]}
