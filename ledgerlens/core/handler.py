@@ -39,7 +39,7 @@ class Core:
     def handle(self, ev: InboundEvent) -> list[OutboundMessage]:
         if not self.store.mark_processed(ev.event_id):
             return []  # duplicate delivery: already answered once
-        if reason := self.guard.check_message(ev.user_ref, ev.media):
+        if reason := self.guard.check_message(ev.user_ref, ev.media, ev.client_ip):
             return [_text(REFUSALS[reason])]
         if ev.kind == InboundKind.BUTTON_REPLY:
             return self._button(ev)
