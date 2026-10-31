@@ -23,11 +23,16 @@ from ledgerlens.core.handler import Core
 from ledgerlens.core.models import SourceType
 from ledgerlens.core.store import Store
 from ledgerlens.llm.client import make_client
+from ledgerlens.llm.transcribe import make_transcriber
 
 CHAT_PAGE = (Path(__file__).parent / "chat.html").read_text(encoding="utf-8")
 
 app = FastAPI(title="LedgerLens web chat")
-core = Core(Store(os.environ.get("LEDGERLENS_DB", ":memory:")), make_client())
+# Voice on the public web page is OFF unless the operator turns it on (D-15): audio sent to Meta's speech
+# endpoint may be retained and reviewed under Meta's terms, so only the builder's own voice goes there.
+VOICE_WEB = os.environ.get("LEDGERLENS_VOICE_WEB") == "1"
+core = Core(Store(os.environ.get("LEDGERLENS_DB", ":memory:")), make_client(),
+            transcriber=make_transcriber() if VOICE_WEB else None)
 
 
 class ChatIn(BaseModel):
@@ -36,6 +41,8 @@ class ChatIn(BaseModel):
     text: Optional[str] = None
     image_b64: Optional[str] = None
     image_mime: Optional[str] = None
+    audio_b64: Optional[str] = None   # WAV recorded in the browser (mono, 16-bit, 16 kHz); never stored
+    audio_mime: Optional[str] = None
     button_id: Optional[str] = None
     source_hint: Optional[SourceType] = None  # receipt | sms | notebook, declared by the person
 
@@ -45,10 +52,18 @@ def home() -> HTMLResponse:
     return HTMLResponse(CHAT_PAGE)
 
 
+@app.get("/config")
+def config() -> dict:
+    """Tells the page which optional inputs this deployment has switched on."""
+    return {"voice": core.transcriber is not None}
+
+
 @app.post("/chat")
 def chat(body: ChatIn) -> dict:
     if body.button_id:
         kind = InboundKind.BUTTON_REPLY
+    elif body.audio_b64:
+        kind = InboundKind.AUDIO
     elif body.image_b64:
         kind = InboundKind.IMAGE
     else:
@@ -58,8 +73,9 @@ def chat(body: ChatIn) -> dict:
         channel=Channel.WEB,
         user_ref=hashlib.sha256(f"web:{body.session_id}".encode()).hexdigest()[:16],
         kind=kind, text=body.text, button_id=body.button_id,
-        media=base64.b64decode(body.image_b64) if body.image_b64 else None,
-        media_mime=body.image_mime, source_hint=body.source_hint,
+        media=(base64.b64decode(body.audio_b64) if body.audio_b64
+               else base64.b64decode(body.image_b64) if body.image_b64 else None),
+        media_mime=body.audio_mime if body.audio_b64 else body.image_mime, source_hint=body.source_hint,
     )
     out = core.handle(ev)
     return {"messages": [m.model_dump(exclude={"attachment"}) for m in out]}

@@ -43,6 +43,8 @@ select{flex:1;min-width:0}
 label.btn{display:inline-block}
 input[type=file]{display:none}
 .hint{font-size:12px;color:var(--mute);margin-top:6px}
+[hidden]{display:none!important}
+#mic.rec{background:var(--warnbg);color:var(--warn);border-color:var(--warnline)}
 </style>
 </head>
 <body>
@@ -68,10 +70,16 @@ input[type=file]{display:none}
     <label class="btn o" for="file">Photo</label>
     <input id="file" type="file" accept="image/*">
   </div>
+  <div class="row" id="voicerow" hidden>
+    <button class="btn o" id="mic" type="button" aria-pressed="false">&#127908; Record a voice note</button>
+    <label class="btn o" for="afile">Audio file</label>
+    <input id="afile" type="file" accept="audio/*">
+  </div>
   <div class="row">
     <input id="text" type="text" placeholder="Or paste an SMS, or type a command" autocomplete="off" aria-label="Message">
     <button class="btn" id="send" type="button">Send</button>
   </div>
+  <div class="hint" id="voicehint" hidden>Voice notes (English): your voice is sent to Meta's speech model to turn it into text, and Meta may keep it under its terms. Use made-up numbers. This page does not store the audio.</div>
   <div class="hint">You choose what the photo is, so the evidence label is set by you, not guessed by the model. Nothing is saved until you tap Confirm.</div>
 </div></footer>
 <script>
@@ -131,6 +139,71 @@ input[type=file]{display:none}
     });
   }
   function readRaw(file){return new Promise(function(res,rej){var r=new FileReader();r.onload=function(){res(r.result)};r.onerror=rej;r.readAsDataURL(file)})}
+
+  // Voice (D-15): record or pick audio, convert to mono 16-bit 16 kHz WAV in the browser (Meta's required format),
+  // send once, keep nothing. The server tells us whether voice is switched on for this deployment.
+  var MAXREC=45, recorder=null, chunks=[], tick=null, t0=0;
+  function wavBlob(f32){
+    var n=f32.length,dv=new DataView(new ArrayBuffer(44+n*2));
+    function w(o,t){for(var i=0;i<t.length;i++)dv.setUint8(o+i,t.charCodeAt(i))}
+    w(0,'RIFF');dv.setUint32(4,36+n*2,true);w(8,'WAVE');w(12,'fmt ');dv.setUint32(16,16,true);dv.setUint16(20,1,true);
+    dv.setUint16(22,1,true);dv.setUint32(24,16000,true);dv.setUint32(28,32000,true);dv.setUint16(32,2,true);dv.setUint16(34,16,true);
+    w(36,'data');dv.setUint32(40,n*2,true);
+    for(var i=0;i<n;i++){var x=Math.max(-1,Math.min(1,f32[i]));dv.setInt16(44+i*2,x<0?x*0x8000:x*0x7FFF,true)}
+    return new Blob([dv],{type:'audio/wav'});
+  }
+  function toWav16k(blob){
+    return blob.arrayBuffer().then(function(ab){
+      var AC=window.AudioContext||window.webkitAudioContext,ctx=new AC();
+      return new Promise(function(res,rej){var p=ctx.decodeAudioData(ab,res,rej);if(p&&p.catch)p.catch(rej)})
+        .then(function(buf){
+          try{ctx.close()}catch(e){}
+          var OAC=window.OfflineAudioContext||window.webkitOfflineAudioContext;
+          var off=new OAC(1,Math.max(1,Math.ceil(buf.duration*16000)),16000),src=off.createBufferSource();
+          src.buffer=buf;src.connect(off.destination);src.start(0);
+          return new Promise(function(res,rej){var p=off.startRendering();if(p&&p.then)p.then(res,rej);else off.oncomplete=function(e){res(e.renderedBuffer)}});
+        })
+        .then(function(r){return {wav:wavBlob(r.getChannelData(0)),seconds:r.duration}});
+    });
+  }
+  function sendAudio(blob){
+    if(busy)return;
+    toWav16k(blob).then(function(o){
+      return readRaw(o.wav).then(function(data){
+        bubble('me','🎤 Voice note ('+Math.round(o.seconds)+' s)');
+        post({audio_b64:/^data:[^,]*,(.*)$/.exec(data)[1],audio_mime:'audio/wav'});
+      });
+    }).catch(function(){bubble('sys','I could not read that audio. Please try recording again.')});
+  }
+  function stopRec(){if(recorder&&recorder.state!=='inactive')recorder.stop()}
+  function micClick(){
+    var mic=document.getElementById('mic');
+    if(recorder&&recorder.state==='recording'){stopRec();return}
+    if(busy)return;
+    if(!navigator.mediaDevices||!window.MediaRecorder){bubble('sys','This browser cannot record. Use "Audio file" instead.');return}
+    navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+      chunks=[];recorder=new MediaRecorder(stream);
+      recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+      recorder.onstop=function(){
+        stream.getTracks().forEach(function(t){t.stop()});clearInterval(tick);
+        mic.classList.remove('rec');mic.setAttribute('aria-pressed','false');mic.innerHTML='&#127908; Record a voice note';
+        var b=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});chunks=[];
+        if(b.size)sendAudio(b);
+      };
+      recorder.start();t0=Date.now();mic.classList.add('rec');mic.setAttribute('aria-pressed','true');
+      tick=setInterval(function(){
+        var s=Math.floor((Date.now()-t0)/1000);mic.textContent='■ Stop ('+s+' s)';
+        if(s>=MAXREC)stopRec();
+      },250);
+    }).catch(function(){bubble('sys','I could not use the microphone. Allow microphone access, or use "Audio file".')});
+  }
+  document.getElementById('mic').onclick=micClick;
+  document.getElementById('afile').addEventListener('change',function(e){
+    var f=e.target.files[0];e.target.value='';if(f)sendAudio(f);
+  });
+  fetch('/config').then(function(r){return r.json()}).then(function(c){
+    if(c&&c.voice){document.getElementById('voicerow').hidden=false;document.getElementById('voicehint').hidden=false}
+  }).catch(function(){});
   document.getElementById('file').addEventListener('change',function(e){
     var f=e.target.files[0];e.target.value='';if(!f||busy)return;
     var kind=document.getElementById('kind').value;

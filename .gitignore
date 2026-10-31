@@ -8,6 +8,8 @@ data/
 *.opus
 *.m4a
 *.mp3
+*.wav
+*.webm
 labels*.csv
 !eval/labels_template.csv
 .env

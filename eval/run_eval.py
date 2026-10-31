@@ -47,6 +47,7 @@ from ledgerlens.core.handler import Core  # noqa: E402
 from ledgerlens.core.models import SourceType, Transaction  # noqa: E402
 from ledgerlens.core.store import Store  # noqa: E402
 from ledgerlens.llm.client import FakeModelClient, make_client  # noqa: E402
+from ledgerlens.llm.transcribe import make_transcriber  # noqa: E402
 
 HOLDOUT_LOG = Path(__file__).parent / "holdout_runs.jsonl"
 SCORING_PY = Path(__file__).parent / "scoring.py"
@@ -227,7 +228,7 @@ def run_through_core(core: Core, rec: Recorder, ev: InboundEvent) -> tuple[Optio
         return None, kind, dt, None
     if msgs and msgs[0].text in REFUSALS.values():
         return None, "refused", dt, None
-    return None, "no_proposal", dt, None  # e.g. voice notes before the voice feature exists
+    return None, "no_proposal", dt, None  # e.g. an audio file that could not be read or transcribed
 
 
 def load_env_file(path: Path) -> None:
@@ -342,7 +343,8 @@ def run(a: argparse.Namespace, client_factory: Optional[Callable] = None) -> tup
         rec = Recorder(inner)
         # Rate limit and budget are lifted for the eval (a batch run is not a user session); the image size
         # limit stays on purpose, so a photo the demo would refuse shows up as `refused` instead of being hidden.
-        core = Core(Store(), rec, Guard(GuardConfig(rate_limit=10**9, daily_usd_cap=1e12, daily_call_cap=10**9)))
+        core = Core(Store(), rec, Guard(GuardConfig(rate_limit=10**9, daily_usd_cap=1e12, daily_call_cap=10**9)),
+                    transcriber=make_transcriber(), allow_audio_conversion=True)  # voice files: builder's own, SIMULATED (D-15)
         for i, (sha, g) in enumerate(chosen, 1):
             ev = build_event(a.images / g.file, f"eval-{sha[:12]}", sha, g.type)
             pred, outcome, dt, usage = run_through_core(core, rec, ev)
