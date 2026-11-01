@@ -52,6 +52,7 @@ input[type=file]{display:none}
   <h1>LedgerLens <span class="sub">· demo chat</span></h1>
   <div class="sub">Turn a trader's receipts, notebook pages and SMS into a ledger a lender can read.</div>
   <div class="banner">Demo: send sample or made-up records only, never real ones. Sample data is labelled SIMULATED.</div>
+  <div class="banner" id="fakebanner" hidden>Sample replies only: this page is not reading your photo yet. Every photo gets the same example answer, so do not trust the numbers.</div>
   <div class="chips">
     <button class="chip" data-send="demo" type="button">Load a sample ledger</button>
     <button class="chip" data-send="summary" type="button">Summary</button>
@@ -202,6 +203,7 @@ input[type=file]{display:none}
     var f=e.target.files[0];e.target.value='';if(f)sendAudio(f);
   });
   fetch('/config').then(function(r){return r.json()}).then(function(c){
+    if(c&&c.demo_model){document.getElementById('fakebanner').hidden=false}
     if(c&&c.voice){document.getElementById('voicerow').hidden=false;document.getElementById('voicehint').hidden=false}
   }).catch(function(){});
   document.getElementById('file').addEventListener('change',function(e){

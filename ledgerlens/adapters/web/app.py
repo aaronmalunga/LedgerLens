@@ -22,7 +22,7 @@ from ledgerlens.core.events import Channel, InboundEvent, InboundKind
 from ledgerlens.core.handler import Core
 from ledgerlens.core.models import SourceType
 from ledgerlens.core.store import Store
-from ledgerlens.llm.client import make_client
+from ledgerlens.llm.client import FakeModelClient, make_client
 from ledgerlens.llm.transcribe import make_transcriber
 
 CHAT_PAGE = (Path(__file__).parent / "chat.html").read_text(encoding="utf-8")
@@ -55,7 +55,9 @@ def home() -> HTMLResponse:
 @app.get("/config")
 def config() -> dict:
     """Tells the page which optional inputs this deployment has switched on."""
-    return {"voice": core.transcriber is not None}
+    return {"voice": core.transcriber is not None,
+            # R-13: the canned stand-in model is running, so replies are sample output, not a reading of the photo
+            "demo_model": isinstance(core.model, FakeModelClient)}
 
 
 def client_ip(request: Request) -> str | None:

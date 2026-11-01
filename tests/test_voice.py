@@ -242,11 +242,11 @@ def test_web_voice_is_off_by_default_and_on_when_configured():
     from ledgerlens.adapters.web import app as webapp
     client = TestClient(webapp.app)
     body = {"session_id": "sv", "message_id": "w-v1", "audio_b64": base64.b64encode(make_wav()).decode(), "audio_mime": "audio/wav"}
-    assert client.get("/config").json() == {"voice": False}
+    assert client.get("/config").json()["voice"] is False
     assert "switched off" in client.post("/chat", json=body).json()["messages"][0]["text"]
     webapp.core.transcriber = FakeTranscriber()
     try:
-        assert client.get("/config").json() == {"voice": True}
+        assert client.get("/config").json()["voice"] is True
         body["message_id"] = "w-v2"
         msgs = client.post("/chat", json=body).json()["messages"]
         assert "I heard:" in msgs[0]["text"]
