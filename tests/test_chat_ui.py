@@ -51,3 +51,21 @@ def test_home_page_and_chat_route_accept_the_declared_type():
 def test_legend_is_on_the_credit_file_page():
     t = TestClient(app).get("/credit-file/demo").text
     assert "How to read this page" in t and "edited by trader" in t
+
+
+def test_config_flags_the_canned_model_so_the_page_can_say_so():
+    """R-13: with no key the host runs the stand-in model; the page must be told, to show a visible label."""
+    r = TestClient(app).get("/config").json()
+    assert r["demo_model"] is True  # the test environment has no LEDGERLENS_MODEL_BACKEND=meta
+
+
+def test_chat_page_has_a_hidden_label_for_the_canned_model():
+    html = TestClient(app).get("/").text
+    assert 'id="fakebanner"' in html and "not reading your photo" in html
+
+
+def test_credit_file_links_and_banner_follow_the_colour_scheme():
+    """R-01: default browser blue was unreadable on the dark background; links and the banner use theme tokens."""
+    html = TestClient(app).get("/credit-file/demo").text
+    assert "a{color:var(--acc)}" in html
+    assert "--warnbg" in html and "background:#fff3e6" not in html
