@@ -1,6 +1,7 @@
 """The channel-agnostic core (D-06): handle(InboundEvent) -> list[OutboundMessage]."""
 from __future__ import annotations
 
+import logging
 import re
 from decimal import Decimal, InvalidOperation
 
@@ -16,6 +17,8 @@ from .guard import REFUSALS, Guard
 from .events import Button, InboundEvent, InboundKind, OutboundKind, OutboundMessage
 from .models import SourceType, Transaction, evidence_tier
 from .store import Store
+
+log = logging.getLogger("ledgerlens")
 
 HELP = ("I'm LedgerLens. Send me a photo of a receipt or notebook page, a mobile-money SMS, "
         "or a voice note about a sale. I'll read it, you confirm it, and I keep your ledger. "
@@ -107,7 +110,10 @@ class Core:
             usage = getattr(self.model, "last_usage", None)
             if usage:
                 self.guard.record_usage(*usage)
-        except Exception:
+        except Exception as e:
+            # Log only the error class and HTTP status, never the message body: a validation error can echo
+            # the model's output, which may hold a trader's figures.
+            log.warning("model call failed: %s status=%s", type(e).__name__, getattr(e, "status_code", None))
             return [_text("I couldn't read that one. Could you send a clearer photo, or type the amount and date?")]
         pid = self.store.add_pending(ev.user_ref, tx, ev.event_id)
         return [_confirm_card(pid, tx, heard)]
