@@ -58,7 +58,8 @@ class MetaModelClient:
         self.last_model = None
         self.last_reasoning_tokens = None
         # Meta's docs call the key MODEL_API_KEY; META_API_KEY is accepted too.
-        self.client = OpenAI(api_key=os.environ.get("META_API_KEY") or os.environ["MODEL_API_KEY"],
+        # .strip(): a space or line break pasted into a host dashboard silently breaks the key (R-14).
+        self.client = OpenAI(api_key=(os.environ.get("META_API_KEY") or os.environ["MODEL_API_KEY"]).strip(),
                              base_url=os.environ.get("META_BASE_URL", "https://api.meta.ai/v1"))
 
     def extract(self, *, media, mime, text, source_hint):
