@@ -143,6 +143,8 @@ header .in>h1{padding-right:104px}
  .comp>.hint:not(#voicehint){display:none}
 }
 .slow{font-size:12px;color:var(--mute);margin-top:6px}
+.seg.need{box-shadow:0 0 0 3px var(--gold);animation:llneed .6s ease 2}
+@keyframes llneed{50%{box-shadow:0 0 0 6px rgba(201,162,39,.35)}}
 </style>
 </head>
 <body>
@@ -168,7 +170,7 @@ header .in>h1{padding-right:104px}
       <option value="notebook">Notebook page</option>
       <option value="sms">Mobile money or bank SMS</option>
     </select>
-    <label class="btn o photo" for="file"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="pl">Photo</span></label>
+    <label class="btn o photo" for="file" id="photobtn"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="pl">Photo</span></label>
     <input id="file" type="file" accept="image/*">
   </div>
   <div class="row" id="voicerow" hidden>
@@ -308,6 +310,10 @@ header .in>h1{padding-right:104px}
     if(c&&c.demo_model){document.getElementById('fakebanner').hidden=false}
     if(c&&c.voice){document.getElementById('voicerow').hidden=false;document.getElementById('voicehint').hidden=false}
   }).catch(function(){});
+  document.getElementById('photobtn').addEventListener('click',function(e){
+    if(window.LLseg&&!window.LLseg.chosen()){e.preventDefault();window.LLseg.nudge();
+      bubble('sys','First choose what this photo is: Receipt, Notebook page, or Mobile money or bank SMS. Your choice sets how much the record can be trusted.')}
+  });
   document.getElementById('file').addEventListener('change',function(e){
     var f=e.target.files[0];e.target.value='';if(!f||busy)return;
     var kind=document.getElementById('kind').value;
@@ -317,6 +323,7 @@ header .in>h1{padding-right:104px}
         d.appendChild(document.createTextNode(document.getElementById('kind').selectedOptions[0].textContent.replace('This photo is a: ','')));
         var m=/^data:([^;]+);base64,(.*)$/.exec(data);
         post({image_b64:m[2],image_mime:m[1],source_hint:kind});
+        if(window.LLseg)window.LLseg.clear();
       })
       .catch(function(){bubble('sys','I could not open that image. Please try a JPEG or PNG photo.')});
   });
@@ -332,9 +339,11 @@ btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';r.se
 (function(){var sel=document.getElementById('kind'),seg=document.getElementById('seg');
 Array.prototype.forEach.call(sel.options,function(o,i){var b=document.createElement('button');b.type='button';b.setAttribute('role','radio');b.dataset.v=o.value;var sh={receipt:'Receipt',notebook:'Notebook',sms:'SMS'}[o.value]||o.textContent;b.innerHTML='<span class="l"></span><span class="s"></span>';b.firstChild.textContent=o.textContent;b.lastChild.textContent=sh;b.setAttribute('aria-label',o.textContent);
 b.addEventListener('click',function(){pick(o.value,true)});seg.appendChild(b)});
-function pick(v,focus){sel.value=v;Array.prototype.forEach.call(seg.children,function(b){var on=b.dataset.v===v;b.setAttribute('aria-checked',on?'true':'false');b.tabIndex=on?0:-1;if(on&&focus)b.focus()});sel.dispatchEvent(new Event('change'))}
+var chosen=false;function pick(v,focus){chosen=true;seg.classList.remove('need');sel.value=v;Array.prototype.forEach.call(seg.children,function(b){var on=b.dataset.v===v;b.setAttribute('aria-checked',on?'true':'false');b.tabIndex=on?0:-1;if(on&&focus)b.focus()});sel.dispatchEvent(new Event('change'))}
 seg.addEventListener('keydown',function(e){var i=sel.selectedIndex,n=sel.options.length;if(e.key==='ArrowRight'||e.key==='ArrowDown'){i=(i+1)%n}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){i=(i+n-1)%n}else return;e.preventDefault();pick(sel.options[i].value,true)});
-pick(sel.value,false)})();
+function clear(){chosen=false;Array.prototype.forEach.call(seg.children,function(b,i){b.setAttribute('aria-checked','false');b.tabIndex=i===0?0:-1})}
+window.LLseg={chosen:function(){return chosen},clear:clear,nudge:function(){seg.classList.remove('need');void seg.offsetWidth;seg.classList.add('need')}};
+clear()})();
 </script>
 </body>
 </html>
