@@ -311,7 +311,8 @@ header .in>h1{padding-right:104px}
     if(c&&c.voice){document.getElementById('voicerow').hidden=false;document.getElementById('voicehint').hidden=false}
   }).catch(function(){});
   document.getElementById('photobtn').addEventListener('click',function(e){
-    if(window.LLseg&&!window.LLseg.chosen()){e.preventDefault();window.LLseg.nudge();
+    if(window.LLseg&&window.LLseg.chosen()){setTimeout(window.LLseg.clear,0);return}
+    if(window.LLseg){e.preventDefault();window.LLseg.nudge();
       bubble('sys','First choose what this photo is: Receipt, Notebook page, or Mobile money or bank SMS. Your choice sets how much the record can be trusted.')}
   });
   document.getElementById('file').addEventListener('change',function(e){
