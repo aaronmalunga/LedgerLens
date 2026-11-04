@@ -58,79 +58,79 @@ Under the hood, every channel and the test harness share one core:
 
 <p align="center"><img src="docs/architecture.svg" alt="Inputs, channels and the evaluation harness all call one core, which uses Muse Spark 1.3 and Muse Voice Transcribe and writes the ledger and credit file" width="100%"></p>
 
-<details>
-<summary><b>Detailed architecture, for engineers</b> (click to open; use the controls on the diagram to zoom and move around)</summary>
+### Detailed architecture
+
+Every part of the system on one diagram. On GitHub, hover over it and use the zoom and arrow buttons in its corner to move around.
 
 ```mermaid
-%%{init: {"theme": "base", "themeVariables": {"fontSize": "15px", "lineColor": "#B08A1E", "primaryTextColor": "#0F2A24", "clusterBkg": "#F2F5F3", "clusterBorder": "#B08A1E", "edgeLabelBackground": "#FBF4DD"}}}%%
+%%{init: {"theme": "base", "themeVariables": {"fontSize": "15px", "lineColor": "#B08A1E", "primaryTextColor": "#0F2A24", "clusterBkg": "#F7F9F8", "clusterBorder": "#B08A1E", "edgeLabelBackground": "#FBF4DD"}}}%%
 flowchart TB
-    subgraph T["Trader"]
-        direction LR
-        T1["Receipt photo<br/>print or handwritten"]
-        T2["Notebook page"]
-        T3["Mobile-money SMS<br/>(not yet measured)"]
-        T4["Voice note<br/>English, town Nyanja"]
+    subgraph T["TRADER"]
+        T1["<b>Receipt photo</b><br/>print or handwritten"]
+        T2["<b>Notebook page</b><br/>sales and stock"]
+        T3["<b>Voice note</b><br/>English; town Nyanja tested"]
+        T4["<b>Mobile-money SMS</b><br/>screenshot (not yet measured)"]
+        T5["<b>Trader declares the type</b><br/>receipt, notebook or SMS sets the<br/>evidence ceiling (D-14)"]
+        T6["<b>Channel</b><br/>web chat: LIVE (US East)<br/>WhatsApp: designed, blocked by<br/>account verification (131031)"]
     end
 
-    subgraph C["LedgerLens core (Python, FastAPI)"]
-        direction LR
-        C1["1. Adapter<br/>web chat live; WhatsApp planned"]
-        C2["2. Demo guard<br/>size, rate and $3 daily caps"]
-        C3["3. Core.handle()<br/>same code for demo and evaluation"]
-        C4["4. Audio in memory<br/>never stored"]
-        C5["5. Extraction<br/>schema-constrained JSON"]
-        C6["6. Code checks<br/>line sums vs total, dates"]
-        C7["7. Evidence grade<br/>T1, T2 or T3, set by code"]
-        C8["8. Confirm card<br/>Confirm, Edit, Reject"]
-        C9["9. Ledger store<br/>SQLite, hashed session"]
-        C10["10. Credit file<br/>HTML and PDF, no score"]
-        C1 --> C2 --> C3 --> C4 --> C5
-        C6 --> C7 --> C8 --> C9 --> C10
-        C5 --> C6
+    subgraph C["LEDGERLENS CORE (Python, FastAPI)"]
+        C1["<b>1. Adapter to InboundEvent</b><br/>web chat today; WhatsApp would be a<br/>second thin adapter over the same core (D-06)"]
+        C2["<b>2. Demo guard (D-10, D-21)</b><br/>5 MB image, 60 s audio limits<br/>30 messages per 10 min per IP<br/>60 model calls per hour in total<br/>$3 daily spend cap"]
+        C3["<b>3. Core.handle()</b><br/>same code path for demo and evaluation<br/>60 s model timeout, 1 retry"]
+        C4["<b>4. Audio, in memory only (D-15)</b><br/>ffmpeg to 16 kHz mono WAV<br/>audio never stored (a test checks)"]
+        C5["<b>5. Extraction</b><br/>schema-constrained JSON (Transaction)<br/>temperature 0; reasoning effort measured"]
+        C6["<b>6. Code checks (D-08)</b><br/>line sums vs total, card holds<br/>dates computed, never generated"]
+        C7["<b>7. Evidence grade (D-07)</b><br/>T1 third party with a transaction ID<br/>T2 receipt or SMS without an ID<br/>T3 self-reported; edits demote (D-13)"]
+        C8["<b>8. Confirm card</b><br/>Confirm / Edit (becomes T3) / Reject<br/>nothing saved without the trader"]
+        C9["<b>9. Ledger store</b><br/>SQLite, per hashed session"]
+        C10["<b>10. Credit file (D-11)</b><br/>HTML and PDF, source of every line<br/>share of income backed by T1/T2<br/>descriptive: no credit score"]
+        P["<b>Privacy and data gates</b><br/>real records only with consent (D-12, D-22)<br/>standard models only, never Contributor<br/>errors logged as type and status, no content<br/>hashed session IDs, no names stored"]
+        C1 --> C2 --> C3 --> C4 --> C5 --> C6 --> C7 --> C8 --> C9 --> C10
     end
 
-    subgraph M["Meta models"]
-        direction LR
-        M1["Muse Spark 1.3<br/>reads images and text"]
-        M2["Muse Voice Transcribe<br/>voice to text"]
-        M3["Muse Spark Open<br/>planned: in-country hosting"]
+    subgraph M["META MODELS"]
+        M1["<b>Muse Spark 1.3</b><br/>Meta Model API, vision and text<br/>json_schema output<br/>effort: default vs minimal (E-005, E-006)<br/>served from US East (D-25)"]
+        M2["<b>Muse Voice Transcribe</b><br/>Meta Model API<br/>first live run E-007: 3/3 correct"]
+        M3["<b>Muse Spark Open (planned)</b><br/>open weights, side-by-side test (D-18)<br/>path to in-country hosting"]
     end
 
-    subgraph L["Lender"]
-        L1["Microfinance officer<br/>reads the credit file and decides"]
+    subgraph L["LENDER"]
+        L1["<b>Microfinance officer</b><br/>reads the credit file, sees every<br/>line's source and grade, and decides.<br/>LedgerLens does not score."]
+        L2["<b>Next: pilot (planned)</b><br/>measure review time per credit file<br/>with a Zambian microfinance lender"]
     end
 
-    subgraph E["Evaluation and assurance (calls Core.handle directly)"]
-        direction LR
-        E1["Sealed hold-out<br/>SHA-256 in git, scored once"]
-        E2["Metrics<br/>n, 95% interval, p50/p95, cost"]
-        E3["Baseline<br/>a person typing, same scorer"]
-        E4["Security<br/>6/6 injection attempts resisted"]
-        E5["Quality gates<br/>104 tests, no-private-data check"]
+    subgraph E["EVALUATION AND ASSURANCE (calls Core.handle directly, same code as the demo)"]
+        E1["<b>Sealed hold-out</b><br/>SHA-256 per file, committed<br/>before any run; scored once"]
+        E2["<b>Metrics</b><br/>per source: n and 95% interval<br/>p50/p95, cost, error rate"]
+        E3["<b>Baseline</b><br/>a person typing, timed,<br/>same scorer"]
+        E4["<b>Security</b><br/>6 prompt-injection cases<br/>6/6 resisted (E-009)"]
+        E5["<b>Quality gates</b><br/>104 tests in CI (Python 3.12, 3.14)<br/>no-private-data check"]
     end
 
-    T --> C1
+    T6 --> C1
     C4 -. audio .-> M2
     C5 <--> M1
     M3 -. planned .-> C5
     C10 --> L1
-    E --> C3
+    L1 -.-> L2
+    E3 --> C3
 
     classDef trader fill:#E3EFEB,stroke:#1E5E5B,color:#0F2A24
     classDef core fill:#0F2A24,stroke:#C9A227,color:#F2F5F3
+    classDef gate fill:#FBF4DD,stroke:#B08A1E,color:#0F2A24
     classDef meta fill:#1E5E5B,stroke:#7FB5A8,color:#F2F5F3
-    classDef planned fill:#F2F5F3,stroke:#1E5E5B,color:#1E5E5B,stroke-dasharray: 5 4
+    classDef planned fill:#F7F9F8,stroke:#1E5E5B,color:#1E5E5B,stroke-dasharray: 5 4
     classDef lender fill:#FBF4DD,stroke:#B08A1E,color:#0F2A24
     classDef evalc fill:#E3EFEB,stroke:#B08A1E,color:#0F2A24
-    class T1,T2,T3,T4 trader
+    class T1,T2,T3,T4,T5,T6 trader
     class C1,C2,C3,C4,C5,C6,C7,C8,C9,C10 core
+    class P gate
     class M1,M2 meta
-    class M3 planned
+    class M3,L2 planned
     class L1 lender
     class E1,E2,E3,E4,E5 evalc
 ```
-
-</details>
 
 1. **One core for every channel**
 
