@@ -60,7 +60,12 @@ class MetaModelClient:
         # Meta's docs call the key MODEL_API_KEY; META_API_KEY is accepted too.
         # .strip(): a space or line break pasted into a host dashboard silently breaks the key (R-14).
         self.client = OpenAI(api_key=(os.environ.get("META_API_KEY") or os.environ["MODEL_API_KEY"]).strip(),
-                             base_url=os.environ.get("META_BASE_URL", "https://api.meta.ai/v1"))
+                             base_url=os.environ.get("META_BASE_URL", "https://api.meta.ai/v1"),
+                             # Without a limit the SDK waits up to 600 s per try and retries twice, so one
+                             # stalled call froze an eval run for 20 minutes (E-006: 1203.7 s on one record, 4 Nov).
+                             # 60 s is about 2x the slowest call measured (E-005: max 28.4 s); one retry.
+                             timeout=float(os.environ.get("LEDGERLENS_MODEL_TIMEOUT_S", "60")),
+                             max_retries=1)
 
     def extract(self, *, media, mime, text, source_hint):
         prompt = EXTRACTION_PROMPT.format(schema=json.dumps(Transaction.model_json_schema()))
