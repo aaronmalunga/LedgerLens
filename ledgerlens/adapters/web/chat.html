@@ -110,6 +110,38 @@ header .in>h1{padding-right:104px}
 .b.sys{background:var(--card);border:1px solid rgba(176,138,30,.5);border-radius:16px;padding:12px 18px;color:var(--ink);font-size:14px;backdrop-filter:blur(10px) saturate(1.4);-webkit-backdrop-filter:blur(10px) saturate(1.4);box-shadow:0 10px 30px -20px rgba(15,42,36,.5)}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]) .b,:root:not([data-theme=light]) .b.sys{backdrop-filter:blur(8px) saturate(1.5);-webkit-backdrop-filter:blur(8px) saturate(1.5);border-color:rgba(217,180,65,.5)}:root:not([data-theme=light]){--card:rgba(242,245,243,.06)}}
 :root[data-theme=dark] .b,:root[data-theme=dark] .b.sys{backdrop-filter:blur(8px) saturate(1.5);-webkit-backdrop-filter:blur(8px) saturate(1.5);border-color:rgba(217,180,65,.5)}:root[data-theme=dark]{--card:rgba(242,245,243,.06)}
+
+/* mobile first: compact header that scrolls away, one-line chips, short picker labels */
+.seg .s{display:none}
+.photo{gap:8px;color:var(--acc)}
+.comp .btn.o{border-color:rgba(176,138,30,.55)}
+@media (max-width:560px){
+ body{font-size:15px}
+ header{position:static;padding:10px 14px 8px}
+ header .in>.sub{display:none}
+ header .in>h1{font-size:24px;padding-right:96px}
+ header .in>h1 .sub{font-size:14px}
+ .banner{font-size:12px;padding:6px 10px;margin-top:8px;font-weight:600}
+ .chips{flex-wrap:nowrap;overflow-x:auto;gap:8px;margin:10px -14px 0;padding:2px 14px 6px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+ .chips::-webkit-scrollbar{display:none}
+ .chips{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
+ .photo{color:var(--acc)}
+ .chip{flex:0 0 auto;font-size:13px;padding:6px 12px 6px 10px}
+ main{padding:12px}
+ .b{max-width:94%;font-size:15px}
+ .b.sys{font-size:13px;padding:10px 14px}
+ footer{padding:8px 12px calc(8px + env(safe-area-inset-bottom))}
+ .comp .row:first-child{flex-wrap:nowrap}
+ .comp .row:first-child>.seg{flex-basis:auto;height:48px;min-height:0}
+ .comp .row:first-child>label.btn{flex:0 0 auto;min-width:56px;padding:0 14px}
+ .seg .l{display:none}.seg .s{display:inline}
+ .seg button{font-size:14px}
+ .photo .pl{display:none}
+ .seg button:last-child{flex:1}
+ .photo svg{width:22px;height:22px}
+ .comp .btn{min-width:84px}
+ .comp>.hint:not(#voicehint){display:none}
+}
 </style>
 </head>
 <body>
@@ -135,7 +167,7 @@ header .in>h1{padding-right:104px}
       <option value="notebook">Notebook page</option>
       <option value="sms">Mobile money or bank SMS</option>
     </select>
-    <label class="btn o" for="file">Photo</label>
+    <label class="btn o photo" for="file"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"/><circle cx="12" cy="13" r="3.5"/></svg><span class="pl">Photo</span></label>
     <input id="file" type="file" accept="image/*">
   </div>
   <div class="row" id="voicerow" hidden>
@@ -295,7 +327,7 @@ btn.addEventListener('click',function(){var n=cur()==='dark'?'light':'dark';r.se
 </script>
 <script>
 (function(){var sel=document.getElementById('kind'),seg=document.getElementById('seg');
-Array.prototype.forEach.call(sel.options,function(o,i){var b=document.createElement('button');b.type='button';b.setAttribute('role','radio');b.dataset.v=o.value;b.textContent=o.textContent;
+Array.prototype.forEach.call(sel.options,function(o,i){var b=document.createElement('button');b.type='button';b.setAttribute('role','radio');b.dataset.v=o.value;var sh={receipt:'Receipt',notebook:'Notebook',sms:'SMS'}[o.value]||o.textContent;b.innerHTML='<span class="l"></span><span class="s"></span>';b.firstChild.textContent=o.textContent;b.lastChild.textContent=sh;b.setAttribute('aria-label',o.textContent);
 b.addEventListener('click',function(){pick(o.value,true)});seg.appendChild(b)});
 function pick(v,focus){sel.value=v;Array.prototype.forEach.call(seg.children,function(b){var on=b.dataset.v===v;b.setAttribute('aria-checked',on?'true':'false');b.tabIndex=on?0:-1;if(on&&focus)b.focus()});sel.dispatchEvent(new Event('change'))}
 seg.addEventListener('keydown',function(e){var i=sel.selectedIndex,n=sel.options.length;if(e.key==='ArrowRight'||e.key==='ArrowDown'){i=(i+1)%n}else if(e.key==='ArrowLeft'||e.key==='ArrowUp'){i=(i+n-1)%n}else return;e.preventDefault();pick(sel.options[i].value,true)});
