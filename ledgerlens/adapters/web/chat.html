@@ -142,6 +142,7 @@ header .in>h1{padding-right:104px}
  .comp .btn{min-width:84px}
  .comp>.hint:not(#voicehint){display:none}
 }
+.slow{font-size:12px;color:var(--mute);margin-top:6px}
 </style>
 </head>
 <body>
@@ -211,12 +212,13 @@ header .in>h1{padding-right:104px}
   function setBusy(v){busy=v;document.getElementById('send').disabled=v;main.scrollTop=main.scrollHeight}
   function post(payload){
     setBusy(true);var t=typing();
+    var slow=setTimeout(function(){var n=document.createElement('div');n.className='slow';n.textContent='Still reading. A record usually takes 10 to 30 seconds.';t.appendChild(n);main.scrollTop=main.scrollHeight},8000);
     payload.session_id=sid;payload.message_id=uuid();
     fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)})
       .then(function(r){if(!r.ok)throw new Error('http '+r.status);return r.json()})
       .then(function(j){t.remove();(j.messages||[]).forEach(render)})
       .catch(function(){t.remove();bubble('sys','I could not reach the server. Please try again in a moment.')})
-      .then(function(){setBusy(false)});
+      .then(function(){clearTimeout(slow);setBusy(false)});
   }
 
   function sendText(s){s=(s||'').trim();if(!s||busy)return;bubble('me',s);post({text:s})}
