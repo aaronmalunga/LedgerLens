@@ -43,9 +43,9 @@ Built for the Meta Global AI Developer Hackathon 2026, Indie track, *Build for Y
 
 Spaza shops in South Africa and ka-ntemba kiosks in Zambia keep records: receipt books, till slips, notebooks, mobile-money messages, voice notes. Lenders cannot use them, so traders with real trading histories stay "credit-invisible".
 
-- **76% of Zambia's employed people work informally:** 2,496,963 of 3,273,123.
+- **76% of Zambia's employed people work informally:** 2,496,963 of 3,273,123.<br>
     Source: [2022 Labour Force Survey report, Zambia Statistics Agency and Ministry of Labour and Social Security (PDF, copy hosted by the ILO)](https://www.ilo.org/sites/default/files/wcmsp5/groups/public/@africa/@ro-abidjan/@ilo-lusaka/documents/genericdocument/wcms_897049.pdf)
-- **5.7 million South Africans are in informal employment.**
+- **5.7 million South Africans are in informal employment.**<br>
     Source: [Statistics South Africa, "How informality shapes South Africa's employment landscape" (Quarterly Labour Force Survey, Q4 2025)](https://www.statssa.gov.za/?p=19240)
 
 LedgerLens does not ask the trader to change how they work. It reads what they already have.
@@ -57,6 +57,12 @@ LedgerLens does not ask the trader to change how they work. It reads what they a
 Under the hood, every channel and the test harness share one core:
 
 <p align="center"><img src="docs/architecture.svg" alt="Inputs, channels and the evaluation harness all call one core, which uses Muse Spark 1.3 and Muse Voice Transcribe and writes the ledger and credit file" width="100%"></p>
+
+<details>
+<summary><b>Detailed architecture, for engineers</b> (click to open)</summary>
+<br>
+<p align="center"><img src="docs/architecture-detailed.svg" alt="Detailed architecture: trader inputs, the ten steps inside the LedgerLens core, the Meta models, the lender, and the evaluation and assurance layer" width="100%"></p>
+</details>
 
 1. **One core for every channel**
 
