@@ -21,6 +21,7 @@
 <a href="#how-it-was-evaluated">Evaluation</a> &nbsp;·&nbsp;
 <a href="#security-privacy-and-governance">Security</a> &nbsp;·&nbsp;
 <a href="#known-limits">Limits</a> &nbsp;·&nbsp;
+<a href="docs/EVALUATION.md">Evaluation runs</a> &nbsp;·&nbsp;
 <a href="#words-used-on-this-page">Glossary</a> &nbsp;·&nbsp;
 <a href="#run-it-locally">Run locally</a>
 </p>
@@ -177,7 +178,7 @@ flowchart TB
 - The **range** under each result is the 95% interval: the true rate is very likely somewhere inside it. With small n the range is wide, and that is shown on purpose.
 - **"Whole record correct"** means the date, amount, currency, direction (money in or out) and status were all right at once.
 
-All numbers are MEASURED on 4 Nov 2026, through the same code as the demo.
+All numbers are MEASURED on 4 Nov 2026, through the same code as the demo. The "Run" column (E-005 and so on) points to the full write-up of each run in [docs/EVALUATION.md](docs/EVALUATION.md).
 
 | What was tested | Result | n | Run |
 |---|---|---|---|
@@ -187,7 +188,7 @@ All numbers are MEASURED on 4 Nov 2026, through the same code as the demo.
 | **Attempts to trick it with hidden instructions**<br>3 written, 3 spoken | 6 of 6 resisted | 6 | E-009 |
 | **Against a person typing**<br>same 9 records, same 5 fields | **LedgerLens: 16.3 seconds** per record (median), 9 of 9 correct, nothing typed<br><br>**Person: 29 seconds** per record (median), 9 of 9 correct | 9 | E-010 vs E-005 |
 | **Time per record** | Typical (p50): 16.3 seconds<br>Slow cases (p95): 27.5 seconds<br>Hold-out typical: 10.9 seconds | 30, 8 | E-005, E-008 |
-| **Errors** | Hold-out: 0 of 7<br>Practice: 3 of 30 (2 were a missing audio tool on the laptop) | 7, 30 | E-005, E-008 |
+| **Errors** | Hold-out: 0 of 8 calls failed<br>Practice: 3 of 30 (2 were a missing audio tool on the laptop) | 8, 30 | E-005, E-008 |
 | **Cost** | **About $0.01 per record**<br>$0.28 for the whole practice run | 27 | E-005 |
 | **Faster "minimal" reasoning setting** | 2.5 times faster and 55% cheaper<br>but less accurate: 79.2% vs 87.5% whole record<br>2 stalled calls in 30<br>So the default setting was kept | 30 | E-006 vs E-005 |
 
@@ -269,8 +270,8 @@ python scripts/run_injection.py
     - Audio is transcribed in memory and never stored; a test checks this.
     - The microphone is switched off on the public site. (D-15)
 - **The public demo**
-    - At most 30 messages per 10 minutes per user, and 60 model calls per hour in total.
-    - A $3 daily spending cap.
+    - At most 20 messages per 10 minutes per chat, 30 per network address, and 60 model calls per hour in total.
+    - A $3 daily spending cap on the live demo.
     - Images up to 5 MB, audio up to 60 seconds. (D-10, D-21)
 - **Model safety**
     - Standard models only, and a fixed JSON form for every answer.
@@ -349,7 +350,7 @@ uvicorn ledgerlens.adapters.web.app:app --reload   # sample replies by default; 
 | `eval/` | Test harness, fixed scoring rules, hold-out fingerprints and run log, trick-attempt cases |
 | `scripts/` | API smoke test, trick-attempt runner |
 | `tests/` | 104 automated tests |
-| `docs/` | Decision log, architecture diagram, banner, logo |
+| `docs/` | Evaluation runs (`EVALUATION.md`), decision log, diagrams (flow, architecture, evaluation), banner, logo |
 
 ## Built during the hackathon
 
