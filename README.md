@@ -174,23 +174,22 @@ flowchart TB
 **How to read the table:**
 
 - **n** is how many records were tested. Small n means the result could move a lot with more data.
-- The range in square brackets is the **95% interval**: the true rate is very likely somewhere inside it. With small n the range is wide, and that is shown on purpose.
+- The **range** under each result is the 95% interval: the true rate is very likely somewhere inside it. With small n the range is wide, and that is shown on purpose.
 - **"Whole record correct"** means the date, amount, currency, direction (money in or out) and status were all right at once.
 
 All numbers are MEASURED on 4 Nov 2026, through the same code as the demo.
 
 | What was tested | Result | n | Run |
 |---|---|---|---|
-| **Sealed hold-out, real receipts: whole record correct** | **5/7 = 71.4%** [35.9%, 91.8%] | 7 | E-008, scored once |
-| Sealed hold-out: total amount correct | 6/7 = 85.7% [48.7%, 97.4%] | 7 | E-008 |
-| Practice set, real receipts: whole record / amount | 21/24 = 87.5% [69.0%, 95.7%] / 23/24 = 95.8% | 24 | E-005 |
-| Voice notes (2 English, 1 "town Nyanja" mixed with English) | 3/3 [43.8%, 100%] | 3 | E-007 |
-| Attempts to trick it with hidden instructions (3 written, 3 spoken) | 6/6 resisted | 6 | E-009 |
-| **Against a person typing** the same 5 fields | person: 9/9, **median 29 s**; LedgerLens: 9/9, **median 16.3 s**, nothing typed | 9 | E-010 vs E-005 |
-| Time per record | typical (p50) 16.3 s; slow cases (p95) 27.5 s; hold-out typical 10.9 s | 30, 8 | E-005, E-008 |
-| Errors | 0/7 on the hold-out; 3/30 in practice (2 were a missing audio tool on the laptop) | | E-005, E-008 |
-| Cost per record | about $0.01; $0.28 for the whole practice run | 27 | E-005 |
-| Faster "minimal" reasoning setting | 2.5x faster and 55% cheaper, but less accurate (79.2% vs 87.5%) and 2 stalled calls in 30, so the default was kept | 30 | E-006 vs E-005 |
+| **Sealed hold-out, real receipts** | **Whole record correct: 5 of 7 (71.4%)**<br>range 35.9% to 91.8%<br><br>Total amount correct: 6 of 7 (85.7%)<br>range 48.7% to 97.4% | 7 | E-008, scored once |
+| **Practice set, real receipts** | Whole record correct: 21 of 24 (87.5%)<br>range 69.0% to 95.7%<br><br>Total amount correct: 23 of 24 (95.8%) | 24 | E-005 |
+| **Voice notes**<br>2 English, 1 town Nyanja mixed with English | 3 of 3 correct<br>range 43.8% to 100% | 3 | E-007 |
+| **Attempts to trick it with hidden instructions**<br>3 written, 3 spoken | 6 of 6 resisted | 6 | E-009 |
+| **Against a person typing**<br>same 9 records, same 5 fields | **LedgerLens: 16.3 seconds** per record (median), 9 of 9 correct, nothing typed<br><br>**Person: 29 seconds** per record (median), 9 of 9 correct | 9 | E-010 vs E-005 |
+| **Time per record** | Typical (p50): 16.3 seconds<br>Slow cases (p95): 27.5 seconds<br>Hold-out typical: 10.9 seconds | 30, 8 | E-005, E-008 |
+| **Errors** | Hold-out: 0 of 7<br>Practice: 3 of 30 (2 were a missing audio tool on the laptop) | 7, 30 | E-005, E-008 |
+| **Cost** | **About $0.01 per record**<br>$0.28 for the whole practice run | 27 | E-005 |
+| **Faster "minimal" reasoning setting** | 2.5 times faster and 55% cheaper<br>but less accurate: 79.2% vs 87.5% whole record<br>2 stalled calls in 30<br>So the default setting was kept | 30 | E-006 vs E-005 |
 
 The receipts are the developer's own, from South African and Zambian shops, printed and handwritten, with personal details blacked out. They stand in for traders' expense records. Income records are simulated and marked SIMULATED.
 
