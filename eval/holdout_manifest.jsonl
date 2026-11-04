@@ -53,3 +53,6 @@
 {"sha256": "27fd6e8624a92e87aa30d65ce69904d1494d2c0f6ac5f175d19e2101ff842e56", "type": "receipt", "split": "dev", "batch": "b3", "frozen_at": "2026-11-04T06:47:46+00:00"}
 {"sha256": "686d67f25942cd839e974883dd50cc76c42673bc752f6ccf56f80e8d59c5e189", "type": "receipt", "split": "dev", "batch": "b3", "frozen_at": "2026-11-04T06:47:46+00:00"}
 {"sha256": "a18bfdef1b4821b612e3a4aae2d1da9be38b53ea6361297d3350ecc9637b0a90", "type": "receipt", "split": "dev", "batch": "b3", "frozen_at": "2026-11-04T06:47:46+00:00"}
+{"sha256": "5e2dd0a7595e14a5af03a680749b3246e55c3c5f0c3de42828c9fcd6bbef59ca", "type": "voice", "split": "dev", "batch": "b4", "frozen_at": "2026-11-04T08:00:19+00:00"}
+{"sha256": "ab06ec4021b5493760fa470b45aa6b457568391931b86c6a5ed8ac0fb7844f96", "type": "voice", "split": "dev", "batch": "b4", "frozen_at": "2026-11-04T08:00:19+00:00"}
+{"sha256": "d9cf7a2d0463701f8d35ff8d137435612a955defb62ff58c8f130ad3f35ee439", "type": "voice", "split": "dev", "batch": "b4", "frozen_at": "2026-11-04T08:00:19+00:00"}
