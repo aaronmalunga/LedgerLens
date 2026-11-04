@@ -43,9 +43,9 @@ Built for the Meta Global AI Developer Hackathon 2026, Indie track, *Build for Y
 
 Spaza shops in South Africa and ka-ntemba kiosks in Zambia keep records: receipt books, till slips, notebooks, mobile-money messages, voice notes. Lenders cannot use them, so traders with real trading histories stay "credit-invisible".
 
-- **76% of Zambia's employed people work informally:** 2,496,963 of 3,273,123.
+- **76% of Zambia's employed people work informally:** 2,496,963 of 3,273,123.<br>
     Source: [2022 Labour Force Survey report, Zambia Statistics Agency and Ministry of Labour and Social Security (PDF, copy hosted by the ILO)](https://www.ilo.org/sites/default/files/wcmsp5/groups/public/@africa/@ro-abidjan/@ilo-lusaka/documents/genericdocument/wcms_897049.pdf)
-- **5.7 million South Africans are in informal employment.**
+- **5.7 million South Africans are in informal employment.**<br>
     Source: [Statistics South Africa, "How informality shapes South Africa's employment landscape" (Quarterly Labour Force Survey, Q4 2025)](https://www.statssa.gov.za/?p=19240)
 
 LedgerLens does not ask the trader to change how they work. It reads what they already have.
@@ -57,6 +57,80 @@ LedgerLens does not ask the trader to change how they work. It reads what they a
 Under the hood, every channel and the test harness share one core:
 
 <p align="center"><img src="docs/architecture.svg" alt="Inputs, channels and the evaluation harness all call one core, which uses Muse Spark 1.3 and Muse Voice Transcribe and writes the ledger and credit file" width="100%"></p>
+
+<details>
+<summary><b>Detailed architecture, for engineers</b> (click to open; use the controls on the diagram to zoom and move around)</summary>
+
+```mermaid
+%%{init: {"theme": "base", "themeVariables": {"fontSize": "15px", "lineColor": "#B08A1E", "primaryTextColor": "#0F2A24", "clusterBkg": "#F2F5F3", "clusterBorder": "#B08A1E", "edgeLabelBackground": "#FBF4DD"}}}%%
+flowchart TB
+    subgraph T["Trader"]
+        direction LR
+        T1["Receipt photo<br/>print or handwritten"]
+        T2["Notebook page"]
+        T3["Mobile-money SMS<br/>(not yet measured)"]
+        T4["Voice note<br/>English, town Nyanja"]
+    end
+
+    subgraph C["LedgerLens core (Python, FastAPI)"]
+        direction LR
+        C1["1. Adapter<br/>web chat live; WhatsApp planned"]
+        C2["2. Demo guard<br/>size, rate and $3 daily caps"]
+        C3["3. Core.handle()<br/>same code for demo and evaluation"]
+        C4["4. Audio in memory<br/>never stored"]
+        C5["5. Extraction<br/>schema-constrained JSON"]
+        C6["6. Code checks<br/>line sums vs total, dates"]
+        C7["7. Evidence grade<br/>T1, T2 or T3, set by code"]
+        C8["8. Confirm card<br/>Confirm, Edit, Reject"]
+        C9["9. Ledger store<br/>SQLite, hashed session"]
+        C10["10. Credit file<br/>HTML and PDF, no score"]
+        C1 --> C2 --> C3 --> C4 --> C5
+        C6 --> C7 --> C8 --> C9 --> C10
+        C5 --> C6
+    end
+
+    subgraph M["Meta models"]
+        direction LR
+        M1["Muse Spark 1.3<br/>reads images and text"]
+        M2["Muse Voice Transcribe<br/>voice to text"]
+        M3["Muse Spark Open<br/>planned: in-country hosting"]
+    end
+
+    subgraph L["Lender"]
+        L1["Microfinance officer<br/>reads the credit file and decides"]
+    end
+
+    subgraph E["Evaluation and assurance (calls Core.handle directly)"]
+        direction LR
+        E1["Sealed hold-out<br/>SHA-256 in git, scored once"]
+        E2["Metrics<br/>n, 95% interval, p50/p95, cost"]
+        E3["Baseline<br/>a person typing, same scorer"]
+        E4["Security<br/>6/6 injection attempts resisted"]
+        E5["Quality gates<br/>104 tests, no-private-data check"]
+    end
+
+    T --> C1
+    C4 -. audio .-> M2
+    C5 <--> M1
+    M3 -. planned .-> C5
+    C10 --> L1
+    E --> C3
+
+    classDef trader fill:#E3EFEB,stroke:#1E5E5B,color:#0F2A24
+    classDef core fill:#0F2A24,stroke:#C9A227,color:#F2F5F3
+    classDef meta fill:#1E5E5B,stroke:#7FB5A8,color:#F2F5F3
+    classDef planned fill:#F2F5F3,stroke:#1E5E5B,color:#1E5E5B,stroke-dasharray: 5 4
+    classDef lender fill:#FBF4DD,stroke:#B08A1E,color:#0F2A24
+    classDef evalc fill:#E3EFEB,stroke:#B08A1E,color:#0F2A24
+    class T1,T2,T3,T4 trader
+    class C1,C2,C3,C4,C5,C6,C7,C8,C9,C10 core
+    class M1,M2 meta
+    class M3 planned
+    class L1 lender
+    class E1,E2,E3,E4,E5 evalc
+```
+
+</details>
 
 1. **One core for every channel**
 
