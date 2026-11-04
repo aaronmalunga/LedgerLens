@@ -172,8 +172,8 @@ header .in>h1{padding-right:104px}
     <input id="file" type="file" accept="image/*">
   </div>
   <div class="row" id="voicerow" hidden>
-    <button class="btn o" id="mic" type="button" aria-pressed="false">&#127908; Record a voice note</button>
-    <label class="btn o" for="afile">Audio file</label>
+    <button class="btn o photo" id="mic" type="button" aria-pressed="false"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0"/><path d="M12 17.5V21"/><path d="M8.5 21h7"/></svg><span>Record a voice note</span></button>
+    <label class="btn o photo" for="afile"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/><path d="M9 17v-3"/><path d="M12 17v-6"/><path d="M15 17v-4"/></svg><span>Audio file</span></label>
     <input id="afile" type="file" accept="audio/*">
   </div>
   <div class="row">
@@ -272,12 +272,13 @@ header .in>h1{padding-right:104px}
     if(busy)return;
     toWav16k(blob).then(function(o){
       return readRaw(o.wav).then(function(data){
-        bubble('me','🎤 Voice note ('+Math.round(o.seconds)+' s)');
+        bubble('me','Voice note ('+Math.round(o.seconds)+' s)');
         post({audio_b64:/^data:[^,]*,(.*)$/.exec(data)[1],audio_mime:'audio/wav'});
       });
     }).catch(function(){bubble('sys','I could not read that audio. Please try recording again.')});
   }
   function stopRec(){if(recorder&&recorder.state!=='inactive')recorder.stop()}
+  var MICHTML=document.getElementById('mic').innerHTML;
   function micClick(){
     var mic=document.getElementById('mic');
     if(recorder&&recorder.state==='recording'){stopRec();return}
@@ -288,7 +289,7 @@ header .in>h1{padding-right:104px}
       recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
       recorder.onstop=function(){
         stream.getTracks().forEach(function(t){t.stop()});clearInterval(tick);
-        mic.classList.remove('rec');mic.setAttribute('aria-pressed','false');mic.innerHTML='&#127908; Record a voice note';
+        mic.classList.remove('rec');mic.setAttribute('aria-pressed','false');mic.innerHTML=MICHTML;
         var b=new Blob(chunks,{type:recorder.mimeType||'audio/webm'});chunks=[];
         if(b.size)sendAudio(b);
       };
