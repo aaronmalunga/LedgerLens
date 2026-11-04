@@ -1,55 +1,170 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 820" width="1600" height="820" role="img" aria-label="LedgerLens architecture">
-<defs><radialGradient id="bg" cx="75%" cy="45%" r="80%"><stop offset="0" stop-color="#173D35"/><stop offset=".6" stop-color="#0F2A24"/></radialGradient><linearGradient id="gl" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F2F5F3" stop-opacity=".13"/><stop offset="1" stop-color="#F2F5F3" stop-opacity=".05"/></linearGradient><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0 0L10 5L0 10z" fill="#C9A227"/></marker></defs>
-<rect width="1600" height="820" rx="18" fill="url(#bg)"/>
-<rect x="18" y="18" width="1564" height="784" rx="6" fill="none" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="70" y="92" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="44" font-weight="700" fill="#F2F5F3">One core. What we measure is what we demo.</text>
-<text x="70" y="132" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="21" fill="#9FC1B7">Every channel and the evaluation harness call the same code path.</text>
-<rect x="70" y="200" width="270" height="130" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="92" y="242" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Photo</text>
-<text x="92" y="272" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">receipt, notebook page,</text>
-<text x="92" y="296" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">money SMS</text>
-<rect x="70" y="410" width="270" height="130" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="92" y="452" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Voice note</text>
-<text x="92" y="482" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">Nyanja, English, mixed</text>
-<rect x="70" y="620" width="270" height="130" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="92" y="662" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Eval set</text>
-<text x="92" y="692" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">labelled records and</text>
-<text x="92" y="716" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">sealed hold-out</text>
-<rect x="400" y="200" width="270" height="150" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="422" y="242" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">WhatsApp</text>
-<text x="422" y="272" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">designed first; test</text>
-<text x="422" y="296" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">account could not send</text>
-<rect x="422" y="312" width="92" height="24" rx="12" fill="none" stroke="#7FB5A8"/><text x="433" y="329" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#7FB5A8">PLANNED</text>
-<rect x="400" y="410" width="270" height="130" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="422" y="452" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Web chat</text>
-<text x="422" y="482" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">the planned fallback</text>
-<rect x="422" y="498" width="62" height="24" rx="12" fill="#C9A227"/><text x="433" y="515" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="13" font-weight="700" fill="#0F2A24">LIVE</text>
-<rect x="400" y="620" width="270" height="130" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="422" y="662" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Eval harness</text>
-<text x="422" y="692" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">no channel, same call</text>
-<rect x="740" y="330" width="300" height="230" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity="1" stroke-width="1.5"/>
-<text x="762" y="372" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Core.handle()</text>
-<text x="762" y="402" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">Code assigns the evidence</text>
-<text x="762" y="426" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">tier, checks the arithmetic,</text>
-<text x="762" y="450" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">applies limits.</text>
-<text x="762" y="474" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#C9A227">Nothing is saved until</text>
-<text x="762" y="498" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" font-weight="700" fill="#C9A227">the trader confirms.</text>
-<rect x="1110" y="200" width="420" height="120" rx="16" fill="url(#gl)" stroke="#7FB5A8" stroke-opacity=".8" stroke-width="1.5"/>
-<text x="1132" y="242" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Muse Spark 1.3</text>
-<text x="1132" y="272" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">reads images into a fixed JSON schema</text>
-<rect x="1110" y="410" width="420" height="120" rx="16" fill="url(#gl)" stroke="#7FB5A8" stroke-opacity=".8" stroke-width="1.5"/>
-<text x="1132" y="452" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Muse Voice Transcribe</text>
-<text x="1132" y="482" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">audio in memory, never stored</text>
-<rect x="1110" y="620" width="420" height="120" rx="16" fill="url(#gl)" stroke="#C9A227" stroke-opacity=".45" stroke-width="1.5"/>
-<text x="1132" y="662" font-family="'Bodoni Moda','Didot','Bodoni 72',Georgia,serif" font-size="26" font-weight="700" fill="#F2F5F3">Ledger, then credit file</text>
-<text x="1132" y="692" font-family="'Schibsted Grotesk','Segoe UI',Helvetica,Arial,sans-serif" font-size="17" fill="#B9D2CA">HTML and PDF for the lender</text>
-<path d="M340 265H394" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M340 475H394" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M340 685H394" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M670 275L734 390" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M670 475H734" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M670 685L734 520" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M1040 380L1104 260" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
-<path d="M1040 445H1104" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)" transform="translate(0,25)"/>
-<path d="M1040 520L1104 680" stroke="#C9A227" stroke-width="2.5" fill="none" marker-end="url(#ar)"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1320 820" width="1320" height="820" font-family="Segoe UI, Helvetica, Arial, sans-serif" xmlns:c2pa="http://c2pa.org/manifest"><metadata><c2pa:manifest>AAAWgmp1bWIAAAAeanVtZGMycGEAEQAQgAAAqgA4m3EDYzJwYQAAABZcanVtYgAAAEdqdW1kYzJtYQARABCAAACqADibcQN1cm46YzJwYTo5ODYwYzJmYi02ZDc0LTRhNGItYWQ1Ny03OGMxM2ZjYzgwNGQAAAADl2p1bWIAAAApanVtZGMyYXMAEQAQgAAAqgA4m3EDYzJwYS5hc3NlcnRpb25zAAAAALxqdW1iAAAARGp1bWRjYm9yABEAEIAAAKoAOJtxE2MycGEuaW5ncmVkaWVudC52MwAAAAAYYzJzaLX5zpJXlauz9IEtvbPEW/YAAABwY2JvcqNpZGM6Zm9ybWF0bWltYWdlL3N2Zyt4bWxqaW5zdGFuY2VJRHgseG1wOmlpZDo4YmY5NTM3ZS1jOTM2LTQ0YzYtOGE0MC02Yjc0MDNhN2JlM2JscmVsYXRpb25zaGlwaHBhcmVudE9mAAAB4mp1bWIAAABBanVtZGNib3IAEQAQgAAAqgA4m3ETYzJwYS5hY3Rpb25zLnYyAAAAABhjMnNo7+NouP1R1qO1l6Rb35yN+wAAAZljYm9yomdhY3Rpb25zgqJmYWN0aW9ua2MycGEub3BlbmVkanBhcmFtZXRlcnOha2luZ3JlZGllbnRzgaJjdXJseC1zZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmluZ3JlZGllbnQudjNkaGFzaFggTbl1V4wigR9KzH8TR1m7O7jRSJZwAfi5fRnIZY5PHEikZmFjdGlvbngdY29tLmFudGhyb3BpYy5jbGF1ZGUucHJvdmlkZWRqcGFyYW1ldGVyc6F4H2NvbS5hbnRocm9waWMub3JpZ2luLWNvbmZpZGVuY2VndW5rbm93bmtkZXNjcmlwdGlvbnhmQ2xhdWRlIHByb3ZpZGVkIHRoaXMgZmlsZSBhdCB0aGUgcmVxdWVzdCBvZiBhIHVzZXIgYW5kIG1heSBoYXZlIGNyZWF0ZWQgb3IgbW9kaWZpZWQgdGhlIGZpbGUgY29udGVudHMubXNvZnR3YXJlQWdlbnShZG5hbWVmQ2xhdWRlcmFsbEFjdGlvbnNJbmNsdWRlZPUAAADIanVtYgAAAEBqdW1kY2JvcgARABCAAACqADibcRNjMnBhLmhhc2guZGF0YQAAAAAYYzJzaP6enghKCCpfRxNnUasLVpAAAACAY2JvcqVjYWxnZnNoYTI1NmNwYWRNAAAAAAAAAAAAAAAAAGRoYXNoWCDp3G1PcRAN5niznAk0A12/mDfYw/sKGIX/EiUyjmRlO2RuYW1lbmp1bWJmIG1hbmlmZXN0amV4Y2x1c2lvbnOBomVzdGFydBjNZmxlbmd0aBkeBAAAAj5qdW1iAAAAJ2p1bWRjMmNsABEAEIAAAKoAOJtxA2MycGEuY2xhaW0udjIAAAACD2Nib3KlY2FsZ2ZzaGEyNTZpc2lnbmF0dXJleE1zZWxmI2p1bWJmPS9jMnBhL3VybjpjMnBhOjk4NjBjMmZiLTZkNzQtNGE0Yi1hZDU3LTc4YzEzZmNjODA0ZC9jMnBhLnNpZ25hdHVyZWppbnN0YW5jZUlEeCx4bXA6aWlkOjM2OTI0MDM0LTE0OTMtNDIwNS04ZWJjLTczZTVhOTU2MGJmYnJjcmVhdGVkX2Fzc2VydGlvbnODomN1cmx4LXNlbGYjanVtYmY9YzJwYS5hc3NlcnRpb25zL2MycGEuaW5ncmVkaWVudC52M2RoYXNoWCBNuXVXjCKBH0rMfxNHWbs7uNFIlnAB+Ll9Gchljk8cSKJjdXJseCpzZWxmI2p1bWJmPWMycGEuYXNzZXJ0aW9ucy9jMnBhLmFjdGlvbnMudjJkaGFzaFgg4F6nICKtONcoZ/lZLP80zVqGDBLEBTBLd4BDffl7BMCiY3VybHgpc2VsZiNqdW1iZj1jMnBhLmFzc2VydGlvbnMvYzJwYS5oYXNoLmRhdGFkaGFzaFggJN5IY7qoc8ErOp8XLLT0YxwMvZsR4yjelkTTd6QgsH10Y2xhaW1fZ2VuZXJhdG9yX2luZm+jZG5hbWVvQW50aHJvcGljIEZpbGVzZ3ZlcnNpb25lMS4wLjBrc3BlY1ZlcnNpb25lMi40LjAAABA4anVtYgAAAChqdW1kYzJjcwARABCAAACqADibcQNjMnBhLnNpZ25hdHVyZQAAABAIY2JvctKEWQISogEmGCFZAgowggIGMIIBjaADAgECAhRA5aAK7sI50L64g/oGQgU9Z1UTADAKBggqhkjOPQQDAzBJMRcwFQYDVQQKEw5BbnRocm9waWMsIFBCQzEuMCwGA1UEAxMlQW50aHJvcGljIENvbnRlbnQgQ3JlZGVudGlhbHMgUm9vdCBDQTAeFw0yNjA4MDcxODQzNTZaFw0yODA4MDYxOTQzNTZaMEQxFzAVBgNVBAoTDkFudGhyb3BpYywgUEJDMSkwJwYDVQQDEyBBbnRocm9waWMgQ2xhdWRlIENvbnRlbnQgU2lnbmluZzBZMBMGByqGSM49AgEGCCqGSM49AwEHA0IABJh6CmvLUBgFFNU0vUKlOVtE6djd17L5SuwX0LemFisBM3dkd/3cyjxFA3Qo5S46fX0/ihY0VZ7mfb9KF703t5OjWDBWMA4GA1UdDwEB/wQEAwIHgDAVBgNVHSUEDjAMBgorBgEEAYPoXgIBMAwGA1UdEwEB/wQCMAAwHwYDVR0jBBgwFoAUzlHiBIFOZFsj+OPEz5o+nMHXXMIwCgYIKoZIzj0EAwMDZwAwZAIwMXMdFJ4BetLLVY7ORuE9noqbbAZOZn/aArXyTwFAZfKrPzxF2vPoJNf1+UCdg1XGAjBwX1zd9WGqYkqmL5SFqw1QySjr1zJfpJM9+1rdDwSPLMOPOjKuiXjoU/pUUeG9RwmhY3BhZFkNngAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAPZYQKikpFrm6Rj5ixOGb6IO+jtrpyClcljWbid1WOJ+brCikC38oAdtxGH//A+KqnvK+z8wcq/pNXG3vXMvJDZK3MU=</c2pa:manifest></metadata>
+<defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/></marker></defs>
+<rect x="0" y="0" width="1320" height="820" rx="0" fill="#ffffff" stroke="#ffffff" stroke-width="1.5"/>
+<text x="28" y="38" font-size="20" font-weight="700" fill="#111827" text-anchor="start">LedgerLens architecture: from shoebox records to a lender-ready credit file</text>
+<text x="28" y="60" font-size="12.5" font-weight="400" fill="#4b5563" text-anchor="start">One channel-agnostic core serves the live demo and the evaluation harness. Meta models extract; code computes, tiers and checks; the trader confirms.</text>
+<rect x="20" y="78" width="215" height="560" rx="16" fill="#ecfdf5" stroke="#10b981" stroke-width="1.2"/>
+<text x="34" y="100" font-size="12" font-weight="800" fill="#10b981" text-anchor="start">TRADER</text>
+<rect x="250" y="78" width="615" height="560" rx="16" fill="#eef2ff" stroke="#6366f1" stroke-width="1.2"/>
+<text x="264" y="100" font-size="12" font-weight="800" fill="#6366f1" text-anchor="start">LEDGERLENS CORE (Python, FastAPI)</text>
+<rect x="880" y="78" width="225" height="560" rx="16" fill="#fff7ed" stroke="#f97316" stroke-width="1.2"/>
+<text x="894" y="100" font-size="12" font-weight="800" fill="#f97316" text-anchor="start">META MODELS</text>
+<rect x="1120" y="78" width="180" height="560" rx="16" fill="#fdf2f8" stroke="#ec4899" stroke-width="1.2"/>
+<text x="1134" y="100" font-size="12" font-weight="800" fill="#ec4899" text-anchor="start">LENDER</text>
+<rect x="34" y="114" width="187" height="58" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="46" y="136" font-size="13.5" font-weight="700" fill="#047857" text-anchor="start">Receipt photo</text>
+<text x="46" y="155" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">print or handwritten</text>
+<rect x="34" y="184" width="187" height="58" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="46" y="206" font-size="13.5" font-weight="700" fill="#047857" text-anchor="start">Notebook page</text>
+<text x="46" y="225" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">sales and stock</text>
+<rect x="34" y="254" width="187" height="58" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="46" y="276" font-size="13.5" font-weight="700" fill="#047857" text-anchor="start">Voice note</text>
+<text x="46" y="295" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">English; town Nyanja tested</text>
+<rect x="34" y="324" width="187" height="58" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="46" y="346" font-size="13.5" font-weight="700" fill="#047857" text-anchor="start">Mobile-money SMS</text>
+<text x="46" y="365" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">screenshot (not yet measured)</text>
+<rect x="34" y="402" width="187" height="92" rx="12" fill="#ffffff" stroke="#10b981" stroke-width="1.5"/>
+<text x="46" y="424" font-size="13.5" font-weight="700" fill="#047857" text-anchor="start">Channel</text>
+<text x="46" y="443" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">Web chat: LIVE (US East)</text>
+<text x="46" y="459" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">WhatsApp: designed, blocked</text>
+<text x="46" y="475" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">by account verification</text>
+<text x="46" y="491" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">(131031, unverified)</text>
+<rect x="34" y="506" width="187" height="118" rx="12" fill="#d1fae5" stroke="#10b981" stroke-width="1.5"/>
+<text x="46" y="528" font-size="13.5" font-weight="700" fill="#047857" text-anchor="start">Trader declares type</text>
+<text x="46" y="547" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">receipt / notebook / SMS</text>
+<text x="46" y="563" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">sets the evidence ceiling</text>
+<text x="46" y="579" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">(D-14); confirms every</text>
+<text x="46" y="595" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">entry before it is saved</text>
+<rect x="264" y="114" width="280" height="74" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="276" y="136" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">1  Adapter -&gt; InboundEvent</text>
+<text x="276" y="155" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">web chat today; WhatsApp = a second</text>
+<text x="276" y="171" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">thin adapter over the same core (D-06)</text>
+<rect x="264" y="200" width="280" height="90" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="276" y="222" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">2  Demo guard (D-10, D-21)</text>
+<text x="276" y="241" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">5 MB image, 60 s audio limits</text>
+<text x="276" y="257" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">30 msgs / 10 min per IP, 60 calls/h global</text>
+<text x="276" y="273" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">$3 daily spend cap; proxy-aware IP</text>
+<rect x="264" y="302" width="280" height="74" rx="12" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="276" y="324" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">3  Core.handle()</text>
+<text x="276" y="343" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">same code path for demo and eval</text>
+<text x="276" y="359" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">60 s model timeout, 1 retry</text>
+<rect x="264" y="388" width="280" height="90" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="276" y="410" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">4  Audio, in memory only (D-15)</text>
+<text x="276" y="429" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">ffmpeg -&gt; 16 kHz mono WAV</text>
+<text x="276" y="445" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">audio never stored (a test checks)</text>
+<text x="276" y="461" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">transcript goes on as text</text>
+<rect x="264" y="490" width="280" height="134" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="276" y="512" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">Privacy and data gates</text>
+<text x="276" y="531" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">real records only with --allow-real-data</text>
+<text x="276" y="547" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">and recorded consent (D-12, D-22)</text>
+<text x="276" y="563" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">standard models only, never Contributor</text>
+<text x="276" y="579" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">errors logged as class + status, no content</text>
+<text x="276" y="595" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">hashed session IDs, no names stored</text>
+<rect x="560" y="114" width="256" height="74" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="572" y="136" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">5  Extraction</text>
+<text x="572" y="155" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">schema-constrained JSON (Transaction)</text>
+<text x="572" y="171" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">temperature 0; effort measured</text>
+<rect x="560" y="200" width="256" height="74" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="572" y="222" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">6  Code checks (D-08)</text>
+<text x="572" y="241" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">line sums vs total, card holds,</text>
+<text x="572" y="257" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">dates: computed, never generated</text>
+<rect x="560" y="286" width="256" height="90" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="572" y="308" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">7  Evidence tier (D-07)</text>
+<text x="572" y="327" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">T1 third-party + transaction ID</text>
+<text x="572" y="343" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">T2 receipt / SMS without ID</text>
+<text x="572" y="359" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">T3 self-reported; edits demote (D-13)</text>
+<rect x="560" y="388" width="256" height="74" rx="12" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="572" y="410" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">8  Confirm card</text>
+<text x="572" y="429" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">Confirm  /  Edit -&gt; T3  /  Reject</text>
+<text x="572" y="445" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">nothing saved without the trader</text>
+<rect x="560" y="474" width="256" height="58" rx="12" fill="#ffffff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="572" y="496" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">9  Ledger store</text>
+<text x="572" y="515" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">SQLite, per hashed session</text>
+<rect x="560" y="544" width="256" height="80" rx="12" fill="#e0e7ff" stroke="#6366f1" stroke-width="1.5"/>
+<text x="572" y="566" font-size="13.5" font-weight="700" fill="#4338ca" text-anchor="start">10  Credit file (D-11)</text>
+<text x="572" y="585" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">HTML + PDF, provenance per line,</text>
+<text x="572" y="601" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">share of income backed by T1/T2,</text>
+<text x="572" y="617" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">descriptive: no credit score</text>
+<rect x="894" y="114" width="197" height="134" rx="12" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="906" y="136" font-size="13.5" font-weight="700" fill="#c2410c" text-anchor="start">Muse Spark 1.3</text>
+<text x="906" y="155" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">Meta Model API</text>
+<text x="906" y="171" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">vision + text</text>
+<text x="906" y="187" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">json_schema output</text>
+<text x="906" y="203" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">effort: default vs minimal</text>
+<text x="906" y="219" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">measured (E-005, E-006)</text>
+<text x="906" y="235" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">served from US East (D-25)</text>
+<rect x="894" y="262" width="197" height="90" rx="12" fill="#ffffff" stroke="#f97316" stroke-width="1.5"/>
+<text x="906" y="284" font-size="13.5" font-weight="700" fill="#c2410c" text-anchor="start">Muse Voice Transcribe</text>
+<text x="906" y="303" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">Meta Model API</text>
+<text x="906" y="319" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">first live run E-007:</text>
+<text x="906" y="335" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">3/3 notes correct</text>
+<rect x="894" y="366" width="197" height="104" rx="12" fill="#fffbeb" stroke="#f97316" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="906" y="388" font-size="13.5" font-weight="700" fill="#c2410c" text-anchor="start">Muse Spark Open</text>
+<text x="906" y="407" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">open weights via Baseten</text>
+<text x="906" y="423" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">same records, side-by-side</text>
+<text x="906" y="439" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">comparison (D-18)</text>
+<text x="906" y="455" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">path to in-country hosting</text>
+<rect x="894" y="484" width="197" height="140" rx="12" fill="#ffedd5" stroke="#f97316" stroke-width="1.5"/>
+<text x="906" y="506" font-size="13.5" font-weight="700" fill="#c2410c" text-anchor="start">Why Meta models</text>
+<text x="906" y="525" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">one model reads print,</text>
+<text x="906" y="541" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">handwriting and SMS:</text>
+<text x="906" y="557" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">no per-format parsers</text>
+<text x="906" y="573" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">open weights: lenders can</text>
+<text x="906" y="589" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">keep data in-country</text>
+<rect x="1134" y="114" width="152" height="150" rx="12" fill="#ffffff" stroke="#ec4899" stroke-width="1.5"/>
+<text x="1146" y="136" font-size="13.5" font-weight="700" fill="#be185d" text-anchor="start">Microfinance officer</text>
+<text x="1146" y="155" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">reads the credit file</text>
+<text x="1146" y="171" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">sees every line's</text>
+<text x="1146" y="187" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">source and tier</text>
+<text x="1146" y="203" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">decides; LedgerLens</text>
+<text x="1146" y="219" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">does not score</text>
+<rect x="1134" y="278" width="152" height="118" rx="12" fill="#ffffff" stroke="#ec4899" stroke-width="1.5" stroke-dasharray="6 5"/>
+<text x="1146" y="300" font-size="13.5" font-weight="700" fill="#be185d" text-anchor="start">Next: pilot</text>
+<text x="1146" y="319" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">measure review time</text>
+<text x="1146" y="335" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">per credit file with</text>
+<text x="1146" y="351" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">a Zambian MFI</text>
+<text x="1146" y="367" font-size="11.5" font-weight="400" fill="#374151" text-anchor="start">(not yet tested)</text>
+<line x1="221" y1="143" x2="236" y2="143" stroke="#10b981" stroke-width="2" marker-end="url(#a)"/>
+<line x1="221" y1="213" x2="236" y2="213" stroke="#10b981" stroke-width="2" marker-end="url(#a)"/>
+<line x1="221" y1="283" x2="236" y2="283" stroke="#10b981" stroke-width="2" marker-end="url(#a)"/>
+<line x1="221" y1="353" x2="236" y2="353" stroke="#10b981" stroke-width="2" marker-end="url(#a)"/>
+<line x1="128" y1="394" x2="128" y2="402" stroke="#10b981" stroke-width="2" marker-end="url(#a)"/>
+<path d="M221,448 C240,448 240,151 262,151" fill="none" stroke="#10b981" stroke-width="2" marker-end="url(#a)"/>
+<line x1="404" y1="188" x2="404" y2="198" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<line x1="404" y1="290" x2="404" y2="300" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M544,339 C552,339 552,151 558,151" fill="none" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<line x1="404" y1="376" x2="404" y2="386" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M544,433 L552,433 L552,382 L866,382 L866,307 L892,307" fill="none" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<path d="M816,140 C850,140 860,170 892,170" fill="none" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<path d="M892,200 C860,200 850,175 818,170" fill="none" stroke="#f97316" stroke-width="2" marker-end="url(#a)"/>
+<path d="M816,151 C850,151 860,400 892,410" fill="none" stroke="#f97316" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#a)"/>
+<line x1="688" y1="188" x2="688" y2="198" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<line x1="688" y1="274" x2="688" y2="284" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<line x1="688" y1="376" x2="688" y2="386" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<line x1="688" y1="462" x2="688" y2="472" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<line x1="688" y1="532" x2="688" y2="542" stroke="#6b7280" stroke-width="2" marker-end="url(#a)"/>
+<path d="M816,600 L840,600 L840,646 L1112,646 L1112,190 L1132,190" fill="none" stroke="#ec4899" stroke-width="2" marker-end="url(#a)"/>
+<rect x="20" y="654" width="1280" height="148" rx="16" fill="#f8fafc" stroke="#0ea5e9" stroke-width="1.4"/>
+<text x="36" y="678" font-size="12" font-weight="800" fill="#0369a1" text-anchor="start">EVALUATION AND ASSURANCE (calls Core.handle() directly, same code as the demo)</text>
+<rect x="36" y="690" width="240" height="98" rx="10" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="48" y="712" font-size="13.5" font-weight="700" fill="#0369a1" text-anchor="start">Frozen hold-out</text>
+<text x="48" y="733" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">SHA-256 per file, committed</text>
+<text x="48" y="750" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">before any run; scored once</text>
+<rect x="290" y="690" width="240" height="98" rx="10" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="302" y="712" font-size="13.5" font-weight="700" fill="#0369a1" text-anchor="start">Metrics</text>
+<text x="302" y="733" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">per source, n + 95% Wilson CI;</text>
+<text x="302" y="750" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">p50/p95, cost, error rate</text>
+<rect x="544" y="690" width="240" height="98" rx="10" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="556" y="712" font-size="13.5" font-weight="700" fill="#0369a1" text-anchor="start">Baseline</text>
+<text x="556" y="733" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">manual entry, timed,</text>
+<text x="556" y="750" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">same scorer</text>
+<rect x="798" y="690" width="240" height="98" rx="10" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="810" y="712" font-size="13.5" font-weight="700" fill="#0369a1" text-anchor="start">Security</text>
+<text x="810" y="733" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">6 prompt-injection cases:</text>
+<text x="810" y="750" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">6/6 pass (E-009)</text>
+<rect x="1052" y="690" width="240" height="98" rx="10" fill="#ffffff" stroke="#0ea5e9" stroke-width="1.5"/>
+<text x="1064" y="712" font-size="13.5" font-weight="700" fill="#0369a1" text-anchor="start">Quality gates</text>
+<text x="1064" y="733" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">104 tests in CI (Py 3.12, 3.14);</text>
+<text x="1064" y="750" font-size="11.5" font-weight="400" fill="#1f2937" text-anchor="start">no-private-data check</text>
+<text x="1292" y="814" font-size="10.5" font-weight="400" fill="#6b7280" text-anchor="end">Dashed = planned or in progress. D-xx = decision in docs/DECISIONS.md; E-xxx = evaluation run.</text>
 </svg>
