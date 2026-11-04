@@ -17,3 +17,7 @@ labels*.csv
 __pycache__/
 .pytest_cache/
 .venv/
+
+# Other provider env files (keys) must never be committed
+.env.*
+!.env.example

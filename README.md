@@ -40,7 +40,7 @@ Receipts are the developer's own (South African and Zambian shops, printed and h
 | **Muse Spark 1.3** (Meta Model API) | `ledgerlens/llm/client.py` | Reads receipt photos, handwritten pages and transcripts into a JSON schema (`response_format: json_schema`), temperature 0; standard model only (the client refuses any `*-contributor` ID) | E-005, E-008 |
 | Muse Spark reasoning effort | env `LEDGERLENS_REASONING_EFFORT` | Measured default vs minimal on the same 30 records; default chosen for accuracy and reliability | E-006 |
 | **Muse Voice Transcribe** (Meta Model API) | `ledgerlens/llm/transcribe.py` | Voice note -> text in memory; audio never stored; text goes through the same confirm card | E-007 |
-| Muse Spark Open (open weights, via Baseten) | planned comparison | Same SIMULATED records, side by side (D-18); the route for lenders who must keep data in-country | *in progress* |
+| Muse Spark Open (open weights) | not run | Planned side-by-side comparison on the same SIMULATED records (D-18); not run because the one-time hackathon key for the hosted endpoint expired before use. It remains the route for lenders who must keep data in-country | roadmap |
 
 **Why Meta's models matter here:** one multimodal model reads print, handwriting and screenshots without a parser per format; schema-constrained output keeps the pipeline deterministic; and Meta's open-weights models give a path to run the same extraction where financial data must stay in-country.
 
