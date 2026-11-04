@@ -1,0 +1,1 @@
+{"ts": "2026-11-04T08:14:03+00:00", "git_commit": "0ed8d70", "scoring_py_sha256": "bf380fa7877a82b6b1393664761ad3120f897993e0bf3482a8cdce433579e2fe", "backend": "meta", "vision_model": "muse-spark-1.3", "text_model": "muse-spark-1.3", "n_records": 8, "rerun": false}
