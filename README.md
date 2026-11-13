@@ -48,7 +48,7 @@ Built for the Meta Global AI Developer Hackathon 2026, Indie track, *Build for Y
 | **v1.0-hackathon** | Exactly what was submitted to the Meta Global AI Developer Hackathon on 4 Nov 2026 (built 27 Oct to 4 Nov). Frozen: code, results, video and this README's results stay as judged | [tag `v1.0-hackathon`](https://github.com/aaronmalunga/LedgerLens/releases/tag/v1.0-hackathon) · [video](https://youtu.be/nxw78IfoQV0) |
 | **v2 (in progress)** | Continued after the hackathon from lender and trader feedback. Plan: [docs/ROADMAP.md](docs/ROADMAP.md). Every change is listed in [CHANGELOG.md](CHANGELOG.md) with its reason and, where it affects results, a new measured evaluation | `main` |
 
-Results quoted on this page are v1.0 results unless a section says otherwise.
+Results quoted on this page are v1.0 results unless a section says otherwise. The README as submitted is archived at [docs/archive/README_v1.0-hackathon.md](docs/archive/README_v1.0-hackathon.md).
 
 ## The problem
 
