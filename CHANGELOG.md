@@ -7,6 +7,7 @@ All notable changes to LedgerLens. Each entry says what changed, why (with the e
 - README "Status and history" section separating the frozen hackathon version from ongoing work.
 - This changelog.
 - Public roadmap for v2: `docs/ROADMAP.md`.
+- Archived the README as submitted: `docs/archive/README_v1.0-hackathon.md`.
 
 ### Planned (not yet built; order may change with lender and trader feedback)
 - Evidence from users: interview with a consenting spaza shop owner (South Africa); lender feedback on the credit file (one Zambian credit officer so far, USER-REPORTED).
