@@ -14,6 +14,7 @@
 
 <p align="center">
 <a href="#in-one-minute">In one minute</a> &nbsp;·&nbsp;
+<a href="#status-and-history">Status</a> &nbsp;·&nbsp;
 <a href="#the-problem">Problem</a> &nbsp;·&nbsp;
 <a href="#how-it-works">How it works</a> &nbsp;·&nbsp;
 <a href="#results">Results</a> &nbsp;·&nbsp;
@@ -39,6 +40,15 @@
 Built for the Meta Global AI Developer Hackathon 2026, Indie track, *Build for Your World*.
 
 > The live demo runs on a free host that sleeps after 15 minutes, so the first reply can take about a minute. Please send made-up records only.
+
+## Status and history
+
+| Version | What it is | Where |
+|---|---|---|
+| **v1.0-hackathon** | Exactly what was submitted to the Meta Global AI Developer Hackathon on 4 Nov 2026 (built 27 Oct to 4 Nov). Frozen: code, results, video and this README's results stay as judged | [tag `v1.0-hackathon`](https://github.com/aaronmalunga/LedgerLens/releases/tag/v1.0-hackathon) · [video](https://youtu.be/nxw78IfoQV0) |
+| **v2 (in progress)** | Continued after the hackathon from lender and trader feedback. Plan: [docs/ROADMAP.md](docs/ROADMAP.md). Every change is listed in [CHANGELOG.md](CHANGELOG.md) with its reason and, where it affects results, a new measured evaluation | `main` |
+
+Results quoted on this page are v1.0 results unless a section says otherwise.
 
 ## The problem
 
