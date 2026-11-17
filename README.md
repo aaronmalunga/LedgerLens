@@ -301,6 +301,8 @@ python scripts/run_injection.py
 
 Labels: **OBSERVED** means we saw it happen. **INFERENCE** means our reasoning. **HYPOTHESIS** means not yet checked.
 
+Code-review findings (15 Nov 2026): [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md).
+
 - **WhatsApp**
     - **What happened:** messages reached the Meta test app, but replies failed with error 131031 ("Business account locked"), and the business stayed unverified (OBSERVED). The demo runs on the planned web-chat fallback. (D-17)
     - **Next:** register the business, complete verification, and add WhatsApp over the same core.
