@@ -193,7 +193,6 @@ def test_model_cannot_pre_set_the_edited_flag():
 
 
 # --- LL-002 (docs/KNOWN_ISSUES.md #2): a non-positive amount must not reach the ledger ---
-@pytest.mark.xfail(strict=True, reason="LL-002: confirm does not yet block a non-positive amount")
 def test_non_positive_amount_cannot_be_confirmed():
     c = core_with(_sms_with_id())
     pid = card_pid(c.handle(ev("n1", InboundKind.TEXT, text="MTN received K50 txn id MP123")))

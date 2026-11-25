@@ -7,6 +7,7 @@ import uuid
 from decimal import Decimal
 from typing import Optional
 
+from .checks import ConfirmBlocked, blocking_issues
 from .models import Direction, EvidenceTier, Status, Transaction, evidence_tier
 
 SCHEMA = """
@@ -80,6 +81,9 @@ class Store:
         if not got:
             return None
         tx, _, source_event_id = got
+        blocked = blocking_issues(tx)
+        if blocked:
+            raise ConfirmBlocked(blocked)  # LL-002: the only door into the ledger refuses a wrong line
         entry_id = uuid.uuid4().hex[:8]
         tier = evidence_tier(tx.source_type, tx.txn_id, tx.edited)
         with self.db:
