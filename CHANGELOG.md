@@ -10,6 +10,9 @@ All notable changes to LedgerLens. Each entry says what changed, why (with the e
 - Archived the README as submitted: `docs/archive/README_v1.0-hackathon.md`.
 - Known issues from a code review of v1.0-hackathon (15 Nov 2026): `docs/KNOWN_ISSUES.md`. No code changed; evaluation results unchanged.
 
+### Fixed
+- LL-002: confirming an entry with an amount of zero or below is now refused, and the trader is asked to edit it. Only checks that would make the ledger wrong block a confirm (today: a non-positive amount); a missing date or an items/total mismatch stays a warning on the card. Evaluation results unchanged.
+
 ### Planned (not yet built; order may change with lender and trader feedback)
 - Evidence from users: interview with a consenting spaza shop owner (South Africa); lender feedback on the credit file (one Zambian credit officer so far, USER-REPORTED).
 - A new evaluation set collected with written consent, with a hold-out frozen before tuning; results reported per source.

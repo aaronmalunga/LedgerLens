@@ -10,7 +10,7 @@ from ledgerlens.llm.transcribe import Transcriber
 
 from . import audio as audio_in
 
-from .checks import check_transaction
+from .checks import ConfirmBlocked, check_transaction
 from .creditfile import build_credit_file, render_text
 from .demo import DEMO_LABEL, DEMO_TRANSACTIONS
 from .guard import REFUSALS, Guard
@@ -125,7 +125,10 @@ class Core:
             return [_text("That entry is no longer waiting for you.")]
         tx, _, _ = got
         if action == "confirm":
-            entry_id = self.store.confirm(ev.user_ref, pid)
+            try:
+                entry_id = self.store.confirm(ev.user_ref, pid)
+            except ConfirmBlocked as e:
+                return [_text(f"I can't save this yet. {e} Tap Edit to fix it, or Reject.")]
             return [_text(f"Saved to your ledger (entry {entry_id}).")]
         if action == "reject":
             self.store.drop_pending(ev.user_ref, pid)
